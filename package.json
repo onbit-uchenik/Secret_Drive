@@ -1,0 +1,36 @@
+{
+  "name": "team-drive",
+  "version": "1.0.0",
+  "description": "A team file storage sevice. It works on shamir secret share algorithm. The existing file storage services are very popular and efficient still they are not appropriate for storing data which are shared among n people and any operation on data requires a consensus between the team members. The traditional file storage service make one member of team solely responsible for the data, anyone in the team can view, delete or edit data without the other member permission. This type of file storage service can be best used for millitary secret projects.",
+  "main": "index.js",
+  "gypfile": true,
+  "scripts": {
+    "build": "node-gyp rebuild",
+    "clean": "node-gyp clean"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onbitSyn/team-drive.git"
+  },
+  "keywords": [
+    "team",
+    "drive",
+    "file",
+    "storage",
+    "service",
+    "shamir",
+    "secret",
+    "share",
+    "team",
+    "data."
+  ],
+  "author": "Anubhav vats",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/onbitSyn/team-drive/issues"
+  },
+  "homepage": "https://github.com/onbitSyn/team-drive#readme",
+  "dependencies": {
+    "node-addon-api": "^3.0.0"
+  }
+}
