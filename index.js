@@ -2,8 +2,10 @@ const addon = require('./build/Release/addon.node');
 const child = require('./child.js');
 
 
-const data = addon.getShares();
-console.log(data);
+const buffer = addon.getShares();
+console.log(buffer);
+const shares = new Uint8Array(buffer);
+console.log(shares);
 const credentials = addon.createUniqueCredentials();
 console.log(credentials);
 

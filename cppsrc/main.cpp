@@ -58,8 +58,12 @@ shares* getShares(string secret,int n, int k) {
 
 static Napi::ArrayBuffer getSharesWrapped(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
-    shares* scheme_shares = getShares("hello",6,4);
-    static Napi::ArrayBuffer returnValue =  Napi::ArrayBuffer::New(env, scheme_shares, 60);
+    //shares* scheme_shares = getShares("hello",6,4);
+    vector<string>* data = new vector<string>(7);
+    for(int i=0;i<7;i++) {
+        (*data)[i] = "a";
+    }
+    static Napi::ArrayBuffer returnValue =  Napi::ArrayBuffer::New(env, data, 7);
     return returnValue;
 }
 
