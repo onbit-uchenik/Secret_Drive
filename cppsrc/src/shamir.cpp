@@ -14,7 +14,7 @@ typedef vector<vector<point>> shares;
 
 shares* shamir::createShares(string secret,int n,int k) {
   random_device device;
-  default_random_engine generator;
+  default_random_engine generator(device());
   uniform_int_distribution<int> distribution(0,255);
   shares* allShares = new shares(n);
   for(char data:secret) {

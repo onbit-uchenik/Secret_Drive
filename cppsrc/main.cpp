@@ -24,47 +24,50 @@ string createUniqueCredentials() {
   string username = "";
   s >> username;
   username = '_' + username;
-  cout << username << endl;
   string password="";
   random_device device;
-  default_random_engine generator;
+  default_random_engine generator(device());
   uniform_int_distribution<int> distribution(35,125);
   for(int i=0;i<8;i++) {
     password += (char)distribution(generator);
   }
-  cout << password << endl;
   return username + " " + password;
 }
 
 
+Napi::String createUniqueCredentialsWrapper(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  Napi::String returnValue = Napi::String::New(env, createUniqueCredentials());
+  return returnValue;
+}
 
 
 
-void connect(int n, int k) {
-    cout << "construct connected with javascript" << endl;
+shares* getShares(string secret,int n, int k) {
     gen_multipletable();
-    string secret = createUniqueCredentials();
     shares* scheme_shares = createShares(secret,n,k);
-    cout << scheme_shares << endl;
     for(int i=0;i<n;i++) {
       cout << "shares of pariticipant " << (i+1) << " => " << endl;
       for(auto val:(*scheme_shares)[i]) {
           cout << val.x << " " << val.y << endl;
       }
       cout <<  "_____________________________________________________" << endl;
-
-  }
-
+    }
+    return scheme_shares;
 }
 
-Number connectWrapped(const Napi::CallbackInfo& info) {
-    Env env = info.Env();
-    connect(6,4);
-    return Number::New(env,67);
+static Napi::ArrayBuffer getSharesWrapped(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    shares* scheme_shares = getShares("hello",6,4);
+    static Napi::ArrayBuffer returnValue =  Napi::ArrayBuffer::New(env, scheme_shares, 60);
+    return returnValue;
 }
 
-Object InitAll(Napi::Env env, Napi::Object exports) {
-  exports.Set("connect",Napi::Function::New(env,connectWrapped));
+
+
+Napi::Object InitAll(Napi::Env env, Napi::Object exports) {
+  exports.Set("getShares",Napi::Function::New(env,getSharesWrapped));
+  exports.Set("createUniqueCredentials",Napi::Function::New(env,createUniqueCredentialsWrapper));
   return exports;
 }
 
