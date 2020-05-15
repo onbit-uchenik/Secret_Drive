@@ -20,7 +20,11 @@ bool join::addTeam(std::string* team_name_ptr,int* membercnt_ptr,int* threshold_
    if(mapisjoined.find(*team_name_ptr) == mapisjoined.end()) {
      team* temp = new team(team_name_ptr,membercnt_ptr,threshold_ptr);
      mapisjoined[*(team_name_ptr)] = temp;
-     delete temp;
+     temp = NULL;
+     for(auto val:mapisjoined) {
+       cout << *(val.second -> team_name) << " ";
+     }
+     cout << endl;
      return true;
    }
    else return false;
@@ -48,8 +52,7 @@ Napi::Boolean join::addTeamWrapper(const Napi::CallbackInfo& info) {
     string* team_name_ptr = new string(info[0].As<Napi::String>().Utf8Value());
     int* membercnt_ptr = new int(info[1].As<Napi::Number>().Int32Value());
     int* threshold_ptr = new int(info[2].As<Napi::Number>().Int32Value());
-
-    return Napi::Boolean::New(env,join::addTeam(team_name_ptr,membercnt_ptr,threshold_ptr));
+   return Napi::Boolean::New(env,join::addTeam(team_name_ptr,membercnt_ptr,threshold_ptr));
 }
 
 
@@ -60,6 +63,13 @@ Napi::Boolean join::addMemberWrapper(const Napi::CallbackInfo& info) {
   }
   string* team_name_ptr = new string(info[0].As<Napi::String>().Utf8Value());
   string* member_name_ptr =  new string(info[1].As<Napi::String>().Utf8Value());
-  cout << join::addMember(team_name_ptr,member_name_ptr) << endl;
+  if(join::addMember(team_name_ptr,member_name_ptr)){
+    cout << "added member team is completed" << endl;
+  }
+  else cout << "added member" << endl;
+  for(auto val:mapisjoined) {
+    cout << *(val.second -> team_name) << " ";
+  }
+  cout << endl;
   return Napi::Boolean::New(env,true);
 }

@@ -33,8 +33,16 @@ async function createUser(credentials) {
 
 
 function testing() {
-  console.log("adding new team" ,addon.addTeam("codegeeks",4,3));
-  console.log("adding existing team" ,addon.addTeam("codegeeks",5,6));
+  addon.addTeam("codegeeks",4,3);
+  addon.addTeam("magicians",4,3);
+  addon.addTeam("coders",2,1);
+  addon.addMember("codegeeks","a");
+  addon.addMember("codegeeks","b");
+  addon.addMember("codegeeks","c");
+  addon.addMember("codegeeks","d");
+  addon.addMember("coders","d");
+  addon.addMember("coders","d");
+  addon.addMember("coders","e");
 }
-testing();
+//testing();
 //main();
