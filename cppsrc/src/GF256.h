@@ -2,8 +2,8 @@
   implementation of operations (divide, multiply, add, subtract, power ) in finite field GF(256).
   implementation of langrange interpolation in GF(256).
 */
-#ifndef GF_256
-#define GF_256
+#ifndef GF
+#define GF
 
 
 namespace GF256 {
@@ -59,4 +59,5 @@ void gen_multipletable();
   secret.
 */
 unsigned char interpolate(std::vector<GF256::point>& share);
+
 #endif

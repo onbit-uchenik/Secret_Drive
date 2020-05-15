@@ -6,6 +6,9 @@
         "sources": [
              "cppsrc/src/GF256.cpp",
              "cppsrc/src/shamir.cpp",
+             "cppsrc/src/construct.cpp",
+             "cppsrc/src/credentials.cpp",
+             "cppsrc/src/join.cpp",
              "cppsrc/main.cpp"
         ],
         'include_dirs': [
