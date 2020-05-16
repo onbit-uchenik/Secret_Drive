@@ -1,6 +1,5 @@
 const addon = require('./build/Release/addon.node');
 const child = require('./child.js');
-console.log(addon);
 /*
   this function performs 3 tasks :-
   1. creates unique username and password
@@ -10,8 +9,8 @@ console.log(addon);
 function main() {
   const credentials = addon.createUniqueCredentials();
   console.log(credentials);
-  const status_ok = addon.getShares(credentials,6,4);
-  (status_ok) ? createUser(credentials) : console.log("error while creating shares");
+  const shares = addon.getShares(credentials,3,2);
+  console.log(shares);
 }
 
 
@@ -45,4 +44,4 @@ function testing() {
   addon.addMember("coders","e");
 }
 //testing();
-//main();
+main();

@@ -5,7 +5,7 @@
 
 namespace construct {
   shamir::shares* getShares(std::string secret,int n, int k);
-  Napi::Boolean getSharesWrapped(const Napi::CallbackInfo& info);
+  Napi::TypedArrayOf<uint8_t> getSharesWrapped(const Napi::CallbackInfo& info);
 }
 
 #endif
