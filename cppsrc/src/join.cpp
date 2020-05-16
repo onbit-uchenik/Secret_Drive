@@ -52,24 +52,46 @@ Napi::Boolean join::addTeamWrapper(const Napi::CallbackInfo& info) {
     string* team_name_ptr = new string(info[0].As<Napi::String>().Utf8Value());
     int* membercnt_ptr = new int(info[1].As<Napi::Number>().Int32Value());
     int* threshold_ptr = new int(info[2].As<Napi::Number>().Int32Value());
-   return Napi::Boolean::New(env,join::addTeam(team_name_ptr,membercnt_ptr,threshold_ptr));
+    return Napi::Boolean::New(env,join::addTeam(team_name_ptr,membercnt_ptr,threshold_ptr));
 }
 
-
-Napi::Boolean join::addMemberWrapper(const Napi::CallbackInfo& info) {
+Napi::Object join::addMemberWrapper(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
   if(info.Length() != 2) {
-    return Napi::Boolean::New(env,false);
+    Napi::Object x = Napi::Object::New(env);
+    x.Set("error","less number of arguments");
+    return x;
   }
   string* team_name_ptr = new string(info[0].As<Napi::String>().Utf8Value());
   string* member_name_ptr =  new string(info[1].As<Napi::String>().Utf8Value());
-  if(join::addMember(team_name_ptr,member_name_ptr)){
-    cout << "added member team is completed" << endl;
+
+  team* ptr = join::addMember(team_name_ptr,member_name_ptr);
+
+
+  if(ptr != NULL) {
+    //cout << "added member team is completed" << endl << sizeof(*ptr) << endl;
+    Napi::Object x = Napi::Object::New(env);
+    x.Set("error","");
+    x.Set("allMemberJoined",true);
+    x.Set("teamName",*(ptr->team_name));
+    x.Set("memberCnt",*(ptr->membercnt));
+    x.Set("threshold",*(ptr->threshold));
+    string str = "";
+    for(string val:ptr->members){
+      str += val + ' ';
+    }
+    Napi::String members = Napi::String::New(env,str);
+    x.Set("members",members);
+    delete ptr;
+    return x;
   }
-  else cout << "added member" << endl;
-  for(auto val:mapisjoined) {
-    cout << *(val.second -> team_name) << " ";
-  }
-  cout << endl;
-  return Napi::Boolean::New(env,true);
+// else cout << "added member" << endl;
+// for(auto val:mapisjoined) {
+//   cout << *(val.second -> team_name) << " ";
+// }
+// cout << endl;
+  Napi::Object x = Napi::Object::New(env);
+  x.Set("error","");
+  x.Set("allMemberJoined",false);
+  return x;
 }

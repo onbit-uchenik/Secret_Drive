@@ -35,13 +35,13 @@ function testing() {
   addon.addTeam("codegeeks",4,3);
   addon.addTeam("magicians",4,3);
   addon.addTeam("coders",2,1);
-  addon.addMember("codegeeks","a");
-  addon.addMember("codegeeks","b");
-  addon.addMember("codegeeks","c");
-  addon.addMember("codegeeks","d");
-  addon.addMember("coders","d");
-  addon.addMember("coders","d");
-  addon.addMember("coders","e");
+  console.log(addon.addMember("codegeeks","anubhav"));
+  console.log(addon.addMember("codegeeks","bhairav"));
+  console.log(addon.addMember("codegeeks","rajat"));
+  console.log(addon.addMember("codegeeks","damru"));
+  console.log(addon.addMember("coders","damru"));
+  console.log(addon.addMember("coders","rajat"));
+  console.log(addon.addMember("coders","eihk"));
 }
-//testing();
-main();
+testing();
+  //main();

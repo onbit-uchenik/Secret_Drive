@@ -17,7 +17,7 @@ namespace join {
     bool addTeam(std::string* team_name_ptr,int* membercnt_ptr,int* threshold_ptr);
     team* addMember(std::string* team_name,std::string* member_name);
     Napi::Boolean addTeamWrapper(const Napi::CallbackInfo& info);
-    Napi::Boolean addMemberWrapper(const Napi::CallbackInfo& info);
+    Napi::Object addMemberWrapper(const Napi::CallbackInfo& info);
 }
 
 #endif
