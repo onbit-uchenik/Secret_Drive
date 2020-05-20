@@ -9,6 +9,7 @@
              "cppsrc/src/construct.cpp",
              "cppsrc/src/credentials.cpp",
              "cppsrc/src/join.cpp",
+             "cppsrc/src/reconstruct.cpp",
              "cppsrc/main.cpp"
         ],
         'include_dirs': [

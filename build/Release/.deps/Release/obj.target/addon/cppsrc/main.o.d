@@ -9,7 +9,7 @@ Release/obj.target/addon/cppsrc/main.o: ../cppsrc/main.cpp \
  /home/onbit-syn/team-drive/node_modules/node-addon-api/napi-inl.deprecated.h \
  ../cppsrc/./src/GF256.h ../cppsrc/./src/shamir.h \
  ../cppsrc/./src/construct.h ../cppsrc/./src/credentials.h \
- ../cppsrc/./src/join.h
+ ../cppsrc/./src/join.h ../cppsrc/./src/reconstruct.h
 ../cppsrc/main.cpp:
 /home/onbit-syn/team-drive/node_modules/node-addon-api/napi.h:
 /home/onbit-syn/.cache/node-gyp/12.16.3/include/node/node_api.h:
@@ -23,3 +23,4 @@ Release/obj.target/addon/cppsrc/main.o: ../cppsrc/main.cpp \
 ../cppsrc/./src/construct.h:
 ../cppsrc/./src/credentials.h:
 ../cppsrc/./src/join.h:
+../cppsrc/./src/reconstruct.h:

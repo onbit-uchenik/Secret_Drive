@@ -15,7 +15,7 @@ namespace shamir{
 */
   typedef std::vector<std::vector<GF256::point>> shares;
   shares* createShares(std::string secret,int n,int k);
-  std::string getSecret(shares* Kshares,int n,int k);
+  std::string getSecret(shares* Kshares,int k);
 
   /*
   this function should be called whenever the shamir library is required to used

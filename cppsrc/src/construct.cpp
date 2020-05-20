@@ -5,7 +5,6 @@
 #include <iostream>
 #include <ctime>
 #include <sstream>
-#include <random>
 #include <vector>
 #include "./GF256.h"
 #include "./shamir.h"

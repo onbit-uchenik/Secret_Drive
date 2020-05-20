@@ -39,9 +39,9 @@ shares* shamir::createShares(string secret,int n,int k) {
     return allShares;
   }
 
-string shamir::getSecret(shares* Kshares,int n,int k) {
+string shamir::getSecret(shares* Kshares,int k) {
     if((*Kshares).size() < (unsigned int)k) {
-      cout << "Atleast " << k << " shares are required out of " << n << " shares" << endl;
+      cout << "Atleast " << k << " shares are required " << endl;
       return "";
     }
     string secret = "";

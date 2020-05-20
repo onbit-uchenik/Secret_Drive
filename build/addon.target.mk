@@ -99,6 +99,7 @@ OBJS := \
 	$(obj).target/$(TARGET)/cppsrc/src/construct.o \
 	$(obj).target/$(TARGET)/cppsrc/src/credentials.o \
 	$(obj).target/$(TARGET)/cppsrc/src/join.o \
+	$(obj).target/$(TARGET)/cppsrc/src/reconstruct.o \
 	$(obj).target/$(TARGET)/cppsrc/main.o
 
 # Add to the list of files we specially track dependencies for.

@@ -5,13 +5,14 @@
 #include "./src/construct.h"
 #include "./src/credentials.h"
 #include "./src/join.h"
-
+#include "./src/reconstruct.h"
 
 Napi::Object InitAll(Napi::Env env, Napi::Object exports) {
   exports.Set("getShares",Napi::Function::New(env,construct::getSharesWrapped));
   exports.Set("createUniqueCredentials",Napi::Function::New(env,credentials::createUniqueCredentialsWrapper));
   exports.Set("addTeam",Napi::Function::New(env,join::addTeamWrapper));
   exports.Set("addMember",Napi::Function::New(env,join::addMemberWrapper));
+  exports.Set("getSecret",Napi::Function::New(env,reconstruct::getSecretWrapped));
   return exports;
 }
 

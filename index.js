@@ -11,6 +11,10 @@ function main() {
   console.log(credentials);
   const shares = addon.getShares(credentials,3,2);
   console.log(shares);
+  let typedarr = new Uint8Array(8);
+  typedarr[0] = 34;
+  const secret  = addon.getSecret(shares);
+  console.log(secret);
 }
 
 
@@ -36,6 +40,13 @@ function testing() {
   addon.addTeam("magicians",4,3);
   addon.addTeam("coders",2,1);
   console.log(addon.addMember("codegeeks","anubhav"));
+  console.log(addon.addMember("codegeeks","anubhav"));
+  console.log(addon.addMember("codegeeks","anubhav"));
+  console.log(addon.addMember("codegeeks","anubhav"));
+  console.log(addon.addMember("codegeeks","anubhav"));
+  console.log(addon.addMember("codegeeks","anubhav"));
+  console.log(addon.addMember("codegeeks","bhairav"));
+  console.log(addon.addMember("codegeeks","bhairav"));
   console.log(addon.addMember("codegeeks","bhairav"));
   console.log(addon.addMember("codegeeks","rajat"));
   console.log(addon.addMember("codegeeks","damru"));
@@ -43,5 +54,5 @@ function testing() {
   console.log(addon.addMember("coders","rajat"));
   console.log(addon.addMember("coders","eihk"));
 }
-testing();
-  //main();
+//testing();
+main();
