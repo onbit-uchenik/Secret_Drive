@@ -81,3 +81,39 @@ describe('adding member again in a existing team for construction', function() {
     })
 })
 
+describe("construction and reconstruction of shares", function() {
+    const credentials = addon.createUniqueCredentials();
+    const n = Math.floor((Math.random() * 99 )) + 2;
+    const k = Math.floor((Math.random() * (n-1)))+ 2;
+    const shares = addon.getShares(credentials,n,k);
+    it('secret should be reconstructed when threshold shares are given',function() {
+        let x = credentials.length * 2 * k;
+        arr = []
+        for(let i =0;i<x;i++) {
+            arr.push(shares[i]);
+        }
+        const kshares = new Uint8Array(arr);
+        const obj  = addon.getSecret(kshares,k);
+        expect(obj.secret).to.equal(credentials);
+    })
+    it('secret should not be reconstructed when shares are less than threshold',function() {
+        let x = credentials.length * 2 * (k-1);
+        arr = []
+        for(let i =0;i<x;i++) {
+            arr.push(shares[i]);
+        }
+        const kshares = new Uint8Array(arr);
+        const obj  = addon.getSecret(kshares,k);
+        expect(obj.secret).to.not.equal(credentials);
+    })
+    it('secret should not be reconstructed when threshold is not given', function() {
+        let x = credentials.length * 2 * k;
+        arr = []
+        for(let i =0;i<x;i++) {
+            arr.push(shares[i]);
+        }
+        const kshares = new Uint8Array(arr);
+        const obj  = addon.getSecret(kshares);
+        expect(obj.error).to.equal("Expected 2 arguments");        
+    })
+})

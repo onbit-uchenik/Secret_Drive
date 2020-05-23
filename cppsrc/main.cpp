@@ -8,6 +8,7 @@
 #include "./src/reconstruct.h"
 
 Napi::Object InitAll(Napi::Env env, Napi::Object exports) {
+  gen_multipletable();
   exports.Set("getShares",Napi::Function::New(env,construct::getSharesWrapped));
   exports.Set("createUniqueCredentials",Napi::Function::New(env,credentials::createUniqueCredentialsWrapper));
   exports.Set("addTeam",Napi::Function::New(env,engine::addTeamWrapper));

@@ -18,15 +18,7 @@ typedef Napi::TypedArrayOf<uint8_t> Uint8Array;
   Generates the n shares using shamir algorithm.
 */
 shamir::shares* construct::getShares(string secret,int n, int k) {
-    gen_multipletable();
     shamir::shares* scheme_shares = createShares(secret,n,k);
-    for(int i=0;i<n;i++) {
-      cout << "shares of pariticipant " << (i+1) << " => " << endl;
-      for(auto val:(*scheme_shares)[i]) {
-          cout << val.x << " " << val.y << endl;
-      }
-      cout <<  "_____________________________________________________" << endl;
-    }
     return scheme_shares;
 }
 
@@ -42,7 +34,6 @@ Uint8Array construct::getSharesWrapped(const Napi::CallbackInfo& info) {
     string secret = info[0].As<Napi::String>().Utf8Value();
     int n = info[1].As<Napi::Number>().Int32Value();
     int k = info[2].As<Napi::Number>().Int32Value();
-    cout << secret << " " << n << " " << k << endl;
     shares* newShares = construct::getShares(secret,n,k);
     Uint8Array share =  Uint8Array::New(env,secret.size()*n*2);
     int j=0;

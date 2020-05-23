@@ -7,14 +7,20 @@ const child = require('./child.js');
   3. creates a new user in the server with ftp folder to store data.
 */
 function main() {
-  const credentials = addon.createUniqueCredentials();
-  console.log(credentials);
-  const shares = addon.getShares(credentials,3,2);
-  console.log(shares);
-  let typedarr = new Uint8Array(8);
-  typedarr[0] = 34;
-  const secret  = addon.getSecret(shares);
-  console.log(secret);
+    const credentials = addon.createUniqueCredentials();
+    console.log(credentials);
+    const n = Math.floor((Math.random() * 99 )) + 2;
+    const k = Math.floor((Math.random() * (n-1)))+ 2;
+    console.log(n,k);
+    const shares = addon.getShares(credentials,n,k);
+    let x = credentials.length * 2 * k;
+    arr = []
+    for(let i =0;i<x;i++) {
+        arr.push(shares[i]);
+    }
+    const kshares = new Uint8Array(arr);
+    const secret  = addon.getSecret(kshares,k);
+    console.log(secret);
 }
 
 
@@ -35,4 +41,4 @@ async function createUser(credentials) {
 }
 
 
-//main();
+main();
