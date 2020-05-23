@@ -102,8 +102,9 @@ describe("construction and reconstruction of shares", function() {
         for(let i =0;i<x;i++) {
             arr.push(shares[i]);
         }
+
         const kshares = new Uint8Array(arr);
-        const obj  = addon.getSecret(kshares,k);
+        const obj  = addon.getSecret(kshares,k-1);
         expect(obj.secret).to.not.equal(credentials);
     })
     it('secret should not be reconstructed when threshold is not given', function() {

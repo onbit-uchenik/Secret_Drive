@@ -13,7 +13,7 @@ function main() {
     const k = Math.floor((Math.random() * (n-1)))+ 2;
     console.log(n,k);
     const shares = addon.getShares(credentials,n,k);
-    let x = credentials.length * 2 * k;
+    let x = credentials.length * 2 * (k-1);
     arr = []
     for(let i =0;i<x;i++) {
         arr.push(shares[i]);
