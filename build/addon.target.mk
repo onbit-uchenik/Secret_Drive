@@ -40,13 +40,13 @@ CFLAGS_CC_Debug := \
 	-std=gnu++1y
 
 INCS_Debug := \
-	-I/home/onbit-syn/.cache/node-gyp/12.16.3/include/node \
-	-I/home/onbit-syn/.cache/node-gyp/12.16.3/src \
-	-I/home/onbit-syn/.cache/node-gyp/12.16.3/deps/openssl/config \
-	-I/home/onbit-syn/.cache/node-gyp/12.16.3/deps/openssl/openssl/include \
-	-I/home/onbit-syn/.cache/node-gyp/12.16.3/deps/uv/include \
-	-I/home/onbit-syn/.cache/node-gyp/12.16.3/deps/zlib \
-	-I/home/onbit-syn/.cache/node-gyp/12.16.3/deps/v8/include \
+	-I/home/onbit-syn/.cache/node-gyp/14.3.0/include/node \
+	-I/home/onbit-syn/.cache/node-gyp/14.3.0/src \
+	-I/home/onbit-syn/.cache/node-gyp/14.3.0/deps/openssl/config \
+	-I/home/onbit-syn/.cache/node-gyp/14.3.0/deps/openssl/openssl/include \
+	-I/home/onbit-syn/.cache/node-gyp/14.3.0/deps/uv/include \
+	-I/home/onbit-syn/.cache/node-gyp/14.3.0/deps/zlib \
+	-I/home/onbit-syn/.cache/node-gyp/14.3.0/deps/v8/include \
 	-I/home/onbit-syn/team-drive/node_modules/node-addon-api
 
 DEFS_Release := \
@@ -84,13 +84,13 @@ CFLAGS_CC_Release := \
 	-std=gnu++1y
 
 INCS_Release := \
-	-I/home/onbit-syn/.cache/node-gyp/12.16.3/include/node \
-	-I/home/onbit-syn/.cache/node-gyp/12.16.3/src \
-	-I/home/onbit-syn/.cache/node-gyp/12.16.3/deps/openssl/config \
-	-I/home/onbit-syn/.cache/node-gyp/12.16.3/deps/openssl/openssl/include \
-	-I/home/onbit-syn/.cache/node-gyp/12.16.3/deps/uv/include \
-	-I/home/onbit-syn/.cache/node-gyp/12.16.3/deps/zlib \
-	-I/home/onbit-syn/.cache/node-gyp/12.16.3/deps/v8/include \
+	-I/home/onbit-syn/.cache/node-gyp/14.3.0/include/node \
+	-I/home/onbit-syn/.cache/node-gyp/14.3.0/src \
+	-I/home/onbit-syn/.cache/node-gyp/14.3.0/deps/openssl/config \
+	-I/home/onbit-syn/.cache/node-gyp/14.3.0/deps/openssl/openssl/include \
+	-I/home/onbit-syn/.cache/node-gyp/14.3.0/deps/uv/include \
+	-I/home/onbit-syn/.cache/node-gyp/14.3.0/deps/zlib \
+	-I/home/onbit-syn/.cache/node-gyp/14.3.0/deps/v8/include \
 	-I/home/onbit-syn/team-drive/node_modules/node-addon-api
 
 OBJS := \
@@ -98,7 +98,7 @@ OBJS := \
 	$(obj).target/$(TARGET)/cppsrc/src/shamir.o \
 	$(obj).target/$(TARGET)/cppsrc/src/construct.o \
 	$(obj).target/$(TARGET)/cppsrc/src/credentials.o \
-	$(obj).target/$(TARGET)/cppsrc/src/join.o \
+	$(obj).target/$(TARGET)/cppsrc/src/engine.o \
 	$(obj).target/$(TARGET)/cppsrc/src/reconstruct.o \
 	$(obj).target/$(TARGET)/cppsrc/main.o
 

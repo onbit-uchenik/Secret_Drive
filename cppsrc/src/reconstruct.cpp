@@ -25,7 +25,6 @@ string reconstruct::getSecret(shares* Kshares,int k) {
 
 Napi::String reconstruct::getSecretWrapped(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
-    cout << "Am i calling" << endl;
     if(info.Length() != 1) {
       Napi::Error::New(info.Env(), "Expected exactly one argument")
       .ThrowAsJavaScriptException();
@@ -33,10 +32,13 @@ Napi::String reconstruct::getSecretWrapped(const Napi::CallbackInfo& info) {
 
     }
     Napi::TypedArray array = info[0].As<Napi::TypedArray>();
+    int k = info[1].As<Napi::Number>().Int32Value();
+
     if(array.TypedArrayType() == napi_uint8_array) {
       Napi::Uint8Array arr = array.As<Napi::Uint8Array>();
-      cout << "success" << endl;
-      for(int i=0;i<120;i++) cout << (int)arr[i] << endl;
+      int m = array.ElementLength();
+      cout << m << endl;
     }
+
     return Napi::String::New(env,"completed");
 }

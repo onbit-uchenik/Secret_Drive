@@ -8,7 +8,7 @@
              "cppsrc/src/shamir.cpp",
              "cppsrc/src/construct.cpp",
              "cppsrc/src/credentials.cpp",
-             "cppsrc/src/join.cpp",
+             "cppsrc/src/engine.cpp",
              "cppsrc/src/reconstruct.cpp",
              "cppsrc/main.cpp"
         ],

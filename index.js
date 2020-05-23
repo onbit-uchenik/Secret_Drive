@@ -35,24 +35,4 @@ async function createUser(credentials) {
 }
 
 
-function testing() {
-  addon.addTeam("codegeeks",4,3);
-  addon.addTeam("magicians",4,3);
-  addon.addTeam("coders",2,1);
-  console.log(addon.addMember("codegeeks","anubhav"));
-  console.log(addon.addMember("codegeeks","anubhav"));
-  console.log(addon.addMember("codegeeks","anubhav"));
-  console.log(addon.addMember("codegeeks","anubhav"));
-  console.log(addon.addMember("codegeeks","anubhav"));
-  console.log(addon.addMember("codegeeks","anubhav"));
-  console.log(addon.addMember("codegeeks","bhairav"));
-  console.log(addon.addMember("codegeeks","bhairav"));
-  console.log(addon.addMember("codegeeks","bhairav"));
-  console.log(addon.addMember("codegeeks","rajat"));
-  console.log(addon.addMember("codegeeks","damru"));
-  console.log(addon.addMember("coders","damru"));
-  console.log(addon.addMember("coders","rajat"));
-  console.log(addon.addMember("coders","eihk"));
-}
-//testing();
-main();
+//main();
