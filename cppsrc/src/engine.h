@@ -1,5 +1,5 @@
-#ifndef JOIN
-#define JOIN
+#ifndef ENGINE
+#define ENGINE
 
 #include <napi.h>
 #include <set>
