@@ -19,27 +19,22 @@ routes.get('/login',(req,res)=>{
 
 routes.post('/register', (req,res)=>{
     let {username,password,confirmPassword,email} = req.body;
-    console.log(username);
-    console.log(password);
-    console.log(confirmPassword);
-    console.log(email);
     let err = null;
     if(!username || !password || !confirmPassword || !email) {
         err  = 'kindly fill all details'
         res.render('register',{'err': err});
     }
-    if(!emailRegExp.test(email)){
+    if(err===null && !emailRegExp.test(email)){
         err = 'please enter the correct email address';
         res.render('register',{'err':err});
     }
-    if(password !==  confirmPassword) {
+    if(err===null && password !==  confirmPassword) {
         err = 'password do not matches'
         res.render('register',{'err':err,'username':username,'email':email});
     }
     if(err === null) {
         db.queryAsync("SELECT name FROM atithi WHERE name = $1",[username])
         .then(function(result) {
-            console.log(result);
             if(result.rows.length != 0){
                 err = "User already exist try sign in instead";
                 res.render('register',{'err':err});
@@ -51,8 +46,8 @@ routes.post('/register', (req,res)=>{
                         if (err) throw err;
                         password = hash;
                         db.queryAsync("INSERT INTO atithi(name,email,password) VALUES($1,$2,$3)",[username,email,password])
-                        .then(function(){
-                            console.log("succeddful");
+                        .then(function() {
+                            req.flash('success_message','Registered successfully... Login to continue..')
                             res.redirect('/login');
                         })
                         .catch(function(err){
@@ -68,10 +63,12 @@ routes.post('/register', (req,res)=>{
     }
 })
 
+
+
 routes.post('/login',(req,res,next)=>{
     passport.authenticate('local',{
         failureRedirect: '/login',
-        successRedirect: '/success',
+        successRedirect: '/home',
         failureFlash: true,
     })(req,res,next);
 })
@@ -82,9 +79,9 @@ routes.get('/logout',(req,res)=>{
 })
 
 
-routes.get('/success', (req,res)=>{
+routes.get('/home', (req,res)=>{
     console.log(req.user);
-    res.render('home',{'username':req.user});
+    res.render('home',{'user':req.user});
 })
 
 module.exports = routes;
