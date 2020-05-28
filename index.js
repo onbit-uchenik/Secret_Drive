@@ -13,6 +13,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 const config = require('./config');
+const createNewTeam = require('./routes/createNewTeam');
 
 
 
@@ -71,9 +72,10 @@ app.get('/',authentication);
 app.get('/login',authentication);
 app.post('/register',authentication);
 app.post('/login',authentication);
-app.get('/success',checkAuthenticated,authentication);
-
-
+app.get('/home',checkAuthenticated,authentication);
+app.get('/createNewTeam',checkAuthenticated,createNewTeam);
+app.post('/createNewTeam',checkAuthenticated,createNewTeam);
+app.get('/logout',checkAuthenticated,authentication);
 
 server.on('close', () => {
 	console.log('Closed express server')

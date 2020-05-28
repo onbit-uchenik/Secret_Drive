@@ -9,7 +9,12 @@
            <button class="teamNames"><%=element%></button>&nbsp;&nbsp; 
         <%})%> 
         <br />
-        <button id="logout" href="/logout">Logout</button>   
+        <form action="/logout" method="get">
+            <input type="submit" value="Logout" />
+        </form>
+        <form action="/createNewTeam" method="get">
+            <input type="submit" value="Create New Team" />
+        </form>
         <script src="socket.js"></script>
-    </body>
+    </body> 
 </html>
