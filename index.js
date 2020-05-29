@@ -79,14 +79,6 @@ app.get('/logout',checkAuthenticated,authentication);
 
 
 
-io.on('connection',(socket)=>{
-    console.log("new user connected",socket.id);     
-    socket.emit('welcome')
-
-    socket.on('register',function(name){
-        eventSocket.register(socket,name);
-    });
-})
 
 
 server.on('close', () => {
