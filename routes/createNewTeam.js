@@ -2,6 +2,8 @@ const express = require('express');
 const routes = express.Router();
 const promise = require('bluebird');
 const db  = promise.promisifyAll(require('../db'));
+const addon = require('../build/Release/addon.node');
+const eventSocket = require('./eventSocket');
 
 routes.get('/createNewTeam',(req,res)=>{
     res.render('createTeam')
@@ -35,15 +37,17 @@ routes.post('/createNewTeam',(req,res)=>{
                     let data = result.rows;
                     if(data.length === memberCnt){
                         console.log("all the members exist successful");
-                        db.query("INSERT INTO team(name,threshold,membercnt) VALUES($1,$2,$3)",[teamName,threshold,memberCnt])
-                        .then(function(result){
-                            res.redirect('/home');
-                        })
-                        .catch(function(err){
-                            console.log(err);
-                            err = "internal server error";
+                        //send join invitaion links to all the members..
+                        //add team for construction of shares.
+                        if(addon.addTeam(teamName,memberCnt,threshold,false)){
+                            eventSocket.inviteMembers(members,teamName);
+                            req.flash('success_message','team created successfully');
+                            res.redirect('/home');                            
+                        }   
+                        else{
+                            err = "team already exist with this team name, kindly choose new Team Name";
                             res.render('createTeam',{'err':err});
-                        })
+                        }                        
                     }   
                     else{
                         let j=0;

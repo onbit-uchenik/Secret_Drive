@@ -46,6 +46,7 @@ module.exports ={
     passport.deserializeUser(function(username,cb) {
         db.queryAsync("SELECT teamName FROM link WHERE memberName=$1",[username])
         .then(function(result){
+            result.rows.push(username);
             cb(null,result.rows);
         })
         .catch(function(err){

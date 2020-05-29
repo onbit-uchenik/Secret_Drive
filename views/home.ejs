@@ -1,20 +1,30 @@
 <html>
     <head>
         <title>Team Drive</title>
+        <script src="/socket.io/socket.io.js"></script>
     </head>
     <body>
-        <h1> Welcome </h1> 
-        <br />
-        <%user.forEach((element)=>{%>
+        <div id = "home">
+            <% if (success_message != ''){ %>
+                <div class="alert alert-dismissible alert-success">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong> <%= success_message %> </strong>
+                </div>
+            <% } %>
+            <h1>Welcome <%=user[user.length-1]%> </h1> 
+            <br />
+            <%user.forEach(function(element) {%>
            <button class="teamNames"><%=element%></button>&nbsp;&nbsp; 
-        <%})%> 
-        <br />
-        <form action="/logout" method="get">
-            <input type="submit" value="Logout" />
-        </form>
-        <form action="/createNewTeam" method="get">
-            <input type="submit" value="Create New Team" />
-        </form>
+            <%})%> 
+            <br />
+            <form action="/logout" method="get">
+                <input type="submit" value="Logout" />
+            </form>
+            <form action="/createNewTeam" method="get">
+                <input type="submit" value="Create New Team" />
+            </form>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>    
         <script src="socket.js"></script>
     </body> 
 </html>

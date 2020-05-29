@@ -14,7 +14,7 @@ const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 const config = require('./config');
 const createNewTeam = require('./routes/createNewTeam');
-
+const eventSocket = require('./routes/eventSocket');
 
 
 const app = express();
@@ -76,6 +76,18 @@ app.get('/home',checkAuthenticated,authentication);
 app.get('/createNewTeam',checkAuthenticated,createNewTeam);
 app.post('/createNewTeam',checkAuthenticated,createNewTeam);
 app.get('/logout',checkAuthenticated,authentication);
+
+
+
+io.on('connection',(socket)=>{
+    console.log("new user connected",socket.id);     
+    socket.emit('welcome')
+
+    socket.on('register',function(name){
+        eventSocket.register(socket,name);
+    });
+})
+
 
 server.on('close', () => {
 	console.log('Closed express server')

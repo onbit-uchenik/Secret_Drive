@@ -1,7 +1,15 @@
-let teamNames  = document.querySelectorAll('.teamNames')
+const username = $("h1").text().split(' ')[1];
 
-teamNames.forEach((team)=>{
-    team.addEventListener("onclick",function(team){
-        console.log(team);
-    },false);
+let socket = io();
+
+socket.on('welcome',function() {
+    console.log("connected " + socket.id);
+    socket.emit('register',username);
 })
+
+socket.on('notification',function(notifications){
+    console.log(notifications);
+})
+
+
+
