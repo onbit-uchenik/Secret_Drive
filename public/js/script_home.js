@@ -117,7 +117,9 @@ team.onclick = function getTeams() {
                   let button = document.createElement('button');
                   button.innerHTML = `Team ${team.teamname}`;
                   button.onclick = function openteamDrive() {
-                    console.log(`Team ${team.teamname}`);
+                    console.log(`requesting to open Team ${team.teamname}`);
+                    
+
                   }
                   div.appendChild(button);
                 })                
