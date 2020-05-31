@@ -14,8 +14,7 @@ const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 const config = require('./config');
 const createNewTeam = require('./routes/createNewTeam');
-const eventSocket = require('./routes/eventSocket');
-
+const notifications = require('./routes/notifications').routes;
 
 const app = express();
 const server = http.createServer(app); 
@@ -59,6 +58,7 @@ app.use(function(req,res,next) {
 
 const checkAuthenticated  = function(req,res,next) {
     if(req.isAuthenticated()) {
+        console.log(req.session.passport.user);
         res.set('Cache-control','no-cache, private, no-store, must-revalidate, post-check=0,pre-check=0');
         return next();
     }
@@ -76,8 +76,9 @@ app.get('/home',checkAuthenticated,authentication);
 app.get('/createNewTeam',checkAuthenticated,createNewTeam);
 app.post('/createNewTeam',checkAuthenticated,createNewTeam);
 app.get('/logout',checkAuthenticated,authentication);
-
-
+app.get('/notifications',checkAuthenticated, notifications);
+app.post('/joinTeam',checkAuthenticated,notifications);
+app.post('/allowMember',checkAuthenticated,notifications);
 
 
 

@@ -3,7 +3,7 @@ const routes = express.Router();
 const promise = require('bluebird');
 const db  = promise.promisifyAll(require('../db'));
 const addon = require('../build/Release/addon.node');
-const eventSocket = require('./eventSocket');
+const notifications = require('./notifications');
 
 routes.get('/createNewTeam',(req,res)=>{
     res.render('createTeam')
@@ -40,7 +40,7 @@ routes.post('/createNewTeam',(req,res)=>{
                         //send join invitaion links to all the members..
                         //add team for construction of shares.
                         if(addon.addTeam(teamName,memberCnt,threshold,false)){
-                            eventSocket.inviteMembers(members,teamName);
+                            notifications.inviteMembers(members,teamName,req.session.passport.user);
                             req.flash('success_message','team created successfully');
                             res.redirect('/home');                            
                         }   

@@ -101,8 +101,9 @@ Napi::Boolean engine::addTeamWrapper(const Napi::CallbackInfo& info) {
     error: string, describe error message.
     allMemberJoined : boolean, false if not joined true if all joined
     teamName : string
-    memberCint : int
-    threshold : int 
+    memberCnt : int
+    threshold : int
+    members : string 
   }
 */
 

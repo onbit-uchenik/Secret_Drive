@@ -80,7 +80,7 @@ routes.get('/logout',(req,res)=>{
 
 
 routes.get('/home', (req,res)=>{
-    console.log(req.user);
+    console.log("home page coming, ",req.session.passport.user);
     res.render('home',{'user':req.user});
 })
 
