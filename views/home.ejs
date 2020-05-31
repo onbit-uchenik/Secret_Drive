@@ -10,11 +10,7 @@
                     <strong> <%= success_message %> </strong>
                 </div>
             <% } %>
-            <h1>Welcome <%=user[user.length-1]%> </h1> 
-            <br />
-            <%user.forEach(function(element) {%>
-           <button class="teamNames"><%=element%></button>&nbsp;&nbsp; 
-            <%})%> 
+            <h1>Welcome <%=user%> </h1> 
             <br />
             <form action="/logout" method="get">
                 <input type="submit" value="Logout" />
@@ -22,8 +18,12 @@
             <form action="/createNewTeam" method="get">
                 <input type="submit" value="Create New Team" />
             </form>
+
             <button id="btn">notifications</button>
             <div id="notifications"></div>
+            <button id="teams">My Teams</button>
+            <div id="teamsBlock"></div>
+
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
         <script src="script_home.js"></script>

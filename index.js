@@ -15,6 +15,7 @@ const flash = require('connect-flash');
 const config = require('./config');
 const createNewTeam = require('./routes/createNewTeam');
 const notifications = require('./routes/notifications').routes;
+const myTeams  = require('./routes/myTeams');
 
 const app = express();
 const server = http.createServer(app); 
@@ -79,7 +80,7 @@ app.get('/logout',checkAuthenticated,authentication);
 app.get('/notifications',checkAuthenticated, notifications);
 app.post('/joinTeam',checkAuthenticated,notifications);
 app.post('/allowMember',checkAuthenticated,notifications);
-
+app.get('/myTeams',checkAuthenticated,myTeams);
 
 
 server.on('close', () => {

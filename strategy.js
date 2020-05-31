@@ -44,14 +44,8 @@ module.exports ={
     //meaning using a information store in the cookie to get more information about the user
     //and attaching the object of imformation with that user.
     passport.deserializeUser(function(username,cb) {
-        db.queryAsync("SELECT teamName FROM link WHERE memberName=$1",[username])
-        .then(function(result){
-            result.rows.push(username);
-            cb(null,result.rows);
-        })
-        .catch(function(err){
-            cb(err);
-        })
+        cb(null,username);
+
     })
     
     //end of authentication strategy..
