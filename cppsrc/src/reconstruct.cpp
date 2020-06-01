@@ -17,6 +17,7 @@ using namespace shamir;
 
 
 string reconstruct::getSecret(shares* Kshares,int k) {
+    
     string secret = shamir::getSecret(Kshares,k);
     return secret;
 }

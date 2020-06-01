@@ -16,6 +16,8 @@ const config = require('./config');
 const createNewTeam = require('./routes/createNewTeam');
 const notifications = require('./routes/notifications').routes;
 const myTeams  = require('./routes/myTeams');
+const createFtpConnection = require('./routes/createFtpConnection');
+
 
 const app = express();
 const server = http.createServer(app); 
@@ -81,7 +83,9 @@ app.get('/notifications',checkAuthenticated, notifications);
 app.post('/joinTeam',checkAuthenticated,notifications);
 app.post('/allowMember',checkAuthenticated,notifications);
 app.get('/myTeams',checkAuthenticated,myTeams);
-
+app.post('/askMembers',checkAuthenticated,notifications);
+app.post('/openMyTeamDrive',checkAuthenticated,notifications);
+app.get('/createFtpConnection',checkAuthenticated,createFtpConnection);
 
 server.on('close', () => {
 	console.log('Closed express server')
