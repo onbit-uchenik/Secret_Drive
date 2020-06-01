@@ -1,12 +1,11 @@
 const express = require('express');
 const path = require('path');
-const socketio = require('socket.io');
-const http = require('http');   
+const https = require('https');   
+const fs = require('fs');
 const promise = require('bluebird');
 const db = promise.promisifyAll(require('./db'));
 const logger = require('morgan');
 const authentication = require('./routes/authentication');
-const addon = require('./build/Release/addon.node');
 const passport = require('passport');
 const strategy = require('./strategy');
 const session = require('express-session');
@@ -20,8 +19,11 @@ const createFtpConnection = require('./routes/createFtpConnection');
 
 
 const app = express();
-const server = http.createServer(app); 
-const io = socketio(server);           
+
+const server = https.createServer({
+    key: fs.readFileSync('private-key.pem'),
+    cert: fs.readFileSync('public-cert.pem')
+},app); 
 
 const port = process.env.PORT || 3456;
 
@@ -35,11 +37,13 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.use(cookieParser(config.cookie.secret));
+
 app.use(session({
 	secret : config.session.secret,
-    maxAge : 3600000,
+    maxAge : 24 * 60 * 60 * 1000,
     resave : true,
     saveUninitialized : true,
+    cookie:{secure:true}
 }))
 
 app.use(passport.initialize());
@@ -95,5 +99,5 @@ server.on('close', () => {
 	})
 })
 
-console.log(`Server started at http://localhost:${port}/`);
+console.log(`Server started at https://localhost:${port}/`);
 server.listen(port);

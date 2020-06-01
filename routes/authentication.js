@@ -52,6 +52,8 @@ routes.post('/register', (req,res)=>{
                         })
                         .catch(function(err){
                             console.log(err);
+                            let error= "User already exist try sign in instead"
+                            res.render('register',{'err':error});
                         })
                     });
                 });
@@ -59,6 +61,8 @@ routes.post('/register', (req,res)=>{
         })
         .catch(function(err) {
             console.log(err);
+            res.statusCode = 500;
+            res.render('register', {err:"internal server error kindly try again"});
         })
     }
 })

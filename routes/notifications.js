@@ -6,6 +6,7 @@ const {hotp,authenticator} = require('otplib');
 const secret = authenticator.generateSecret(128);
 const addon = require('../build/Release/addon.node');
 const url = require('url');
+const fs = require('fs');
 
 var notifications = {};
 var cnt  = 1;
@@ -141,9 +142,9 @@ routes.post('/joinTeam',async (req,res)=>{
                 if(output.allMemberJoined){
                     let members = output.members.split(' ');
                     
-                    const credentials = addon.createUniqueCredentials();
-                    console.log(credentials);
-                    const shares = addon.getShares(credentials,output.memberCnt,output.threshold);
+                    const foldername = addon.createUniqueCredentials();
+                    console.log(foldername);
+                    const shares = addon.getShares(foldername,output.memberCnt,output.threshold);
                     console.log(shares);
                     db.queryAsync("INSERT INTO team(name,membercnt,threshold) VALUES($1,$2,$3)",[output.teamName,output.memberCnt,output.threshold])
                     .then(function(){
@@ -152,7 +153,7 @@ routes.post('/joinTeam',async (req,res)=>{
                     .catch(function(err) {
                         console.log(err);
                     })
-                    let x = credentials.length * 2;
+                    let x = foldername.length * 2;
                     let temp =[];
                     let j=0,cnt=0;
                     
@@ -183,7 +184,11 @@ routes.post('/joinTeam',async (req,res)=>{
                         });    
                     }
                     teamCreated(members,output.teamName);
-
+                    //creating folder...
+                    fs.mkdir(`/home/onbit-syn/data/${foldername}`,{recursive:true},(err)=>{
+                        if(err) throw err;
+                        console.log("folder created successfully");
+                    });
                     res.statusCode = 200;
                     res.end();
                 }

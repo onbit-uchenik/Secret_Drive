@@ -1,2 +1,5 @@
 node_modules
 config.js
+private-key.pem
+public-cert.pem
+csr.pem

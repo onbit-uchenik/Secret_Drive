@@ -1,5 +1,5 @@
 const addon = require('../build/Release/addon.node');
-
+const child=  require('../child');
 function main() {
     const credentials = addon.createUniqueCredentials();
     console.log(credentials);
@@ -24,7 +24,7 @@ function main() {
 */
 async function createUser(credentials) {
     try{
-      let {stdout,stderr} = await child.run("./createUser.sh",credentials.split(' '));
+      let {stdout,stderr} = await child.run("../createUser.sh",credentials.split(' '));
       console.log("stdout =>");
       console.log(stdout);
       console.log("stderr =>");
@@ -35,7 +35,7 @@ async function createUser(credentials) {
     }
 }
 
-
+createUser("bean 1234");
 
 function test() {
   let arr = [1,  73, 1, 138, 1, 220, 1, 224, 1, 196, 1,  35,
@@ -52,4 +52,4 @@ function test() {
     console.log(secret);
 }
 
-test();
+//test();

@@ -94,7 +94,7 @@ function createJoinButtonNotification(notification) {
         return;
       }
       console.log("team joined successfully");
-      div.removeChild(button);
+      notificationsBlock.removeChild(button);
 
     })
       .catch(function (err) {

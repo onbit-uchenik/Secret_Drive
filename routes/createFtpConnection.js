@@ -4,6 +4,7 @@ const promise = require('bluebird');
 const db = promise.promisifyAll(require('../db'));
 const addon = require('../build/Release/addon.node');
 
+
 let openedTeam = {};
 
 
@@ -33,6 +34,8 @@ routes.get('/createFtpConnection',(req,res)=>{
             console.log(kshares);
             const secret  = addon.getSecret(kshares,parseInt(threshold,10));
             console.log(secret);
+            //no need of ftp now.....
+            //Idea comes after discussion of aryan and anubhav....
             
             res.statusCode = 200;
             res.end();

@@ -9,19 +9,16 @@ module.exports ={
     
     passport.use(new localStrategy(
         function(username,password,done) {
-           
             db.queryAsync("SELECT name,password FROM atithi WHERE name = $1",[username])
             .then(function(result){
                 let data = result.rows;
-                console.log(data);
                 if(data.length === 0) {
-                    return done(null,false);
+                    return done(null,false,{ message : "User Doesn't Exist.Kindly register"});
                 }
-                console.log(data[0].password);
-                console.log(data[0].password.length);        
+
                 bcrypt.compare(password,data[0].password,function(err,match){
                     if (err) {
-                        return done(null, false);
+                        return done(null, false, {message : "Internal Server Error. Kindly try Again"});
                     }
                     if (!match) {
                         return done(null, false, { message: "Password Doesn't Match" });
