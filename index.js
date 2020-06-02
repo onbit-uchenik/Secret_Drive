@@ -53,8 +53,7 @@ app.use(flash());
 
 strategy.x(passport);
 
-app.use(express.static(path.join(__dirname,'/public/css')));
-app.use(express.static(path.join(__dirname,'/public/js')))
+app.use(express.static(path.join(__dirname,'/public')));
 
 app.use(function(req,res,next) {
     res.locals.success_message = req.flash('success_message');
@@ -88,7 +87,7 @@ app.post('/joinTeam',checkAuthenticated,notifications);
 app.post('/allowMember',checkAuthenticated,notifications);
 app.get('/myTeams',checkAuthenticated,myTeams);
 app.post('/askMembers',checkAuthenticated,notifications);
-app.post('/openMyTeamDrive',checkAuthenticated,notifications);
+app.post('/openTeamDrive',checkAuthenticated,notifications);
 app.get('/createFtpConnection',checkAuthenticated,createFtpConnection);
 
 server.on('close', () => {

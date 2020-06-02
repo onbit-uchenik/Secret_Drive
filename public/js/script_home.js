@@ -24,8 +24,8 @@ btn.onclick = function getNotifications() {
             createAllowMemberButtonNotification(notification);
           }
 
-          else if (notification.type === 'teamCreated') {
-            createTeamCreatedNotification(notification);
+          else if (notification.type === 'allMembersJoined') {
+            createAllMembersJoinedNotification(notification);
           }
 
           else if (notification.type === 'openTeam') {
@@ -34,9 +34,9 @@ btn.onclick = function getNotifications() {
 
         });
       })
-        .catch(function (err) {
-          console.log("oops some error while parsing the response", err);
-        })
+      .catch(function (err) {
+        console.log("oops some error while parsing the response", err);
+      })
     })
     .catch(function (err) {
       console.log('Fetch Error :-S', err);
@@ -85,7 +85,7 @@ function createJoinButtonNotification(notification) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ teamName: notification.teamName, tkn: notification.token })
+        body: JSON.stringify({ teamName: notification.teamName})
       }
     ).then(function (response) {
       if (response.status !== 200) {
@@ -117,7 +117,7 @@ function createAllowMemberButtonNotification(notification) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ teamName: notification.teamName, tkn: notification.token, by: notification.by })
+        body: JSON.stringify({ teamName: notification.teamName, by: notification.by })
       }
     )
       .then(function (response) {
@@ -127,7 +127,7 @@ function createAllowMemberButtonNotification(notification) {
           return;
         }
 
-        console.log("permission send to all members");
+        console.log("allowed the member");
         notificationsBlock.removeChild(button);
       })
       .catch(function (err) {
@@ -138,10 +138,14 @@ function createAllowMemberButtonNotification(notification) {
 }
 
 
-function createTeamCreatedNotification(notification) {
+function createAllMembersJoinedNotification(notification) {
+  console.log(notification);
   let p = document.createElement('p');
   p.innerHTML = `Team created ${notification.teamName}`;
-  notificationsBlock.appendChild(button);
+  p.onclick = function(){
+    notificationsBlock.removeChild(p);
+  }
+  notificationsBlock.appendChild(p);
 }
 
 
@@ -178,35 +182,11 @@ function createMyTeamButton(team) {
 
 
 function createOpenTeamButtonNotification(notification) {
-  let button = document.createElement("button");
-  button.innerHTML = `open ${notification.teamName} Drive`
-  button.onclick = function joinTeam() {
-    console.log(`open ${notification.teamName} Drive`);
-    console.log(notification);
-    fetch("/openMyTeamDrive",
-      {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ teamName: notification.teamName, tkn: notification.token, details: notification.details,timestamp:notification.timestamp })
-      }
-    )
-      .then(function (response) {
-        if (response.status !== 200) {
-          console.log('Looks like there was a problem. Status Code: ' +
-            response.status);
-          return;
-        }
-
-        console.log("Opened your drive");
-        notificationsBlock.removeChild(button);
-      })
-      .catch(function (err) {
-        console.log('Fetch Error :-S', err);
-      })
+  let p = document.createElement("p");
+  p.innerHTML = `You can now open ${notification.teamName} drive go to terminal and type command open team drive ${notification.teamName}`
+  notificationsBlock.appendChild(p);
+  p.onclick = function(){
+    notificationsBlock.removeChild(p);
   }
-  notificationsBlock.appendChild(button);
-
+  notificationsBlock.appendChild(p);  
 }

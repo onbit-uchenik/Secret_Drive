@@ -10,7 +10,7 @@
 Napi::Object InitAll(Napi::Env env, Napi::Object exports) {
   gen_multipletable();
   exports.Set("getShares",Napi::Function::New(env,construct::getSharesWrapped));
-  exports.Set("createUniqueCredentials",Napi::Function::New(env,credentials::createUniqueCredentialsWrapper));
+  exports.Set("createUniqueSecret",Napi::Function::New(env,credentials::createUniqueSecretWrapper));
   exports.Set("addTeam",Napi::Function::New(env,engine::addTeamWrapper));
   exports.Set("addMember",Napi::Function::New(env,engine::addMemberWrapper));
   exports.Set("getSecret",Napi::Function::New(env,reconstruct::getSecretWrapped));

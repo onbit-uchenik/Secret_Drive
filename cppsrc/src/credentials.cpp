@@ -14,7 +14,7 @@ using namespace Napi;
   creates a unique random username and password.
 */
 
-string credentials::createUniqueCredentials() {
+string credentials::createUniqueSecret() {
   string foldername="";
   random_device device;
   default_random_engine generator(device());
@@ -28,8 +28,8 @@ string credentials::createUniqueCredentials() {
 }
 
 
-Napi::String credentials::createUniqueCredentialsWrapper(const Napi::CallbackInfo& info) {
+Napi::String credentials::createUniqueSecretWrapper(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
-  Napi::String returnValue = Napi::String::New(env, createUniqueCredentials());
+  Napi::String returnValue = Napi::String::New(env, createUniqueSecret());
   return returnValue;
 }

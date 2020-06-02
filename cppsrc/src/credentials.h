@@ -3,8 +3,8 @@
 #include <napi.h>
 
 namespace credentials{
-  std::string createUniqueCredentials();
-  Napi::String createUniqueCredentialsWrapper(const Napi::CallbackInfo& info);
+  std::string createUniqueSecret();
+  Napi::String createUniqueSecretWrapper(const Napi::CallbackInfo& info);
 }
 
 #endif

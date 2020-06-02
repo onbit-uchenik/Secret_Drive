@@ -32,11 +32,11 @@ routes.post('/createNewTeam',(req,res)=>{
                     x += `name=$${i} OR `;
                 }
                 x += `name=$${memberCnt}`
-                db.queryAsync("SELECT name FROM atithi WHERE " + x,members)
+                db.queryAsync("SELECT name FROM atithi WHERE " + x, members)
                 .then(function(result) {
                     let data = result.rows;
                     if(data.length === memberCnt){
-                        console.log("all the members exist successful");
+                        console.log("Successful :=> All the members exist in database");
                         //send join invitaion links to all the members..
                         //add team for construction of shares.
                         if(addon.addTeam(teamName,memberCnt,threshold,false)){
@@ -73,6 +73,7 @@ routes.post('/createNewTeam',(req,res)=>{
                 })
                 .catch(function(err){
                     console.log(err);
+                    res.render('createTeam',{'err':'Internal Server  Error'});
                 })
             }
             else{

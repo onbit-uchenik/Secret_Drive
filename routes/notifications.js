@@ -2,23 +2,23 @@ const express = require('express');
 const routes = express.Router();
 const promise = require('bluebird');
 const db = promise.promisifyAll(require('../db'));
-const {hotp,authenticator} = require('otplib');
-const secret = authenticator.generateSecret(128);
 const addon = require('../build/Release/addon.node');
 const url = require('url');
 const fs = require('fs');
+const command = require('./command');
 
 var notifications = {};
-var cnt  = 1;
+var teamDriveToOpen = {}
+var cnt = 1;
 
-routes.get('/notifications',(req,res)=> {
+routes.get('/notifications', (req, res) => {
     let user = req.session.passport.user;
     res.setHeader('Content-Type', 'application/json');
-    if(notifications[user] === undefined) {
+    if (notifications[user] === undefined) {
         res.send([]);
         res.end();
     }
-    else{
+    else {
         let result = notifications[user];
         res.send(result);
         delete notifications[user];
@@ -27,308 +27,304 @@ routes.get('/notifications',(req,res)=> {
     console.log(notifications);
 })
 
-function inviteMembers(members,teamName,from){
+function inviteMembers(members, teamName, from) {
     members.forEach((member) => {
-        if(notifications[member] === undefined){
+        if (notifications[member] === undefined) {
             notifications[member] = [{
-                token : hotp.generate(secret,cnt) + "-" + cnt.toString(),
-                from : from,
-                teamName : teamName,
+                from: from,
+                teamName: teamName,
                 type: 'joinTeam'
             }]
-            cnt++;
         }
-        else{
+        else {
             notifications[member].push({
-                token : hotp.generate(secret,cnt) + "-" + cnt.toString(),
-                from : from,
-                teamName : teamName,
-                type: 'joinTeam'    
+                from: from,
+                teamName: teamName,
+                type: 'joinTeam'
             })
-            cnt++;
         }
     });
+    delete notifications[' '];
     console.log(notifications);
 }
 
 
-function teamCreated(members,teamName) {
+function allMembersJoined(members, teamName) {
     members.forEach((member) => {
-        if(notifications[member] === undefined){
+        if (notifications[member] === undefined) {
             notifications[member] = [{
-                token : hotp.generate(secret,cnt) + "-" + cnt.toString(),
-                teamName : teamName,
-                type: 'teamCreated'
+                teamName: teamName,
+                type: 'allMembersJoined'
             }]
-            cnt++;
         }
-        else{
+        else {
             notifications[member].push({
-                token : hotp.generate(secret,cnt) + "-" + cnt.toString(),
-                teamName : teamName,
-                type: 'teamCreated'    
+                teamName: teamName,
+                type: 'allMembersJoined'
             })
-            cnt++;
+
         }
     });
+    delete notifications[' '];
     console.log(notifications);
 }
 
-function openTeam(member,teamName,details) {
-    console.log(details);
-    if(notifications[member] === undefined){
+function openTeam(member, teamName, details) {
+
+    if (notifications[member] === undefined) {
         notifications[member] = [{
-            token : hotp.generate(secret,cnt) + "-" + cnt.toString(),
-            teamName : teamName,
-            details:details,
-            timestamp : Date.now(),
+            teamName: teamName,
             type: 'openTeam'
         }]
-        cnt++;
     }
-    else{
+    else {
         notifications[member].push({
-            token : hotp.generate(secret,cnt) + "-" + cnt.toString(),
-            teamName : teamName,
-            details:details,
-            timestamp : Date(),
-            type: 'openTeam'   
+            teamName: teamName,
+            type: 'openTeam'
         })
-        cnt++;
     }
+    teamDriveToOpen[member] = {
+        details: details,
+        timestamp: Date.now()
+    }
+    console.log(notifications);
+    console.log(teamDriveToOpen);
 }
 
-function askMembers(members,teamName,by) {
+function askMembers(members, teamName, by) {
     members.forEach((member) => {
-        if(notifications[member.membername] === undefined){
+        if (notifications[member.membername] === undefined) {
             notifications[member.membername] = [{
-                token : hotp.generate(secret,cnt) + "-" + cnt.toString(),
-                by : by,
-                teamName : teamName,
+                by: by,
+                teamName: teamName,
                 type: 'allowMember'
             }]
-            cnt++;
         }
-        else{
+        else {
             notifications[member.membername].push({
-                token : hotp.generate(secret,cnt) + "-" + cnt.toString(),
-                by : by,
-                teamName : teamName,
-                type: 'allowMember'    
+                by: by,
+                teamName: teamName,
+                type: 'allowMember'
             })
-            cnt++;
         }
     });
+    delete notifications[' '];
     console.log(notifications);
 }
 
-routes.post('/joinTeam',async (req,res)=>{
-    let {teamName,tkn} = req.body;
+routes.post('/joinTeam', async (req, res) => {
+    let { teamName} = req.body;
     let user = req.session.passport.user;
-    
-    let token  = tkn.split('-')[0];
-    let counter = parseInt(tkn.split('-')[1],10);
-    console.log(token);
-    console.log(cnt);
 
-    let validity = hotp.verify({ token,secret,counter });
-    console.log(validity);
-    
-    if(validity) {
-        let output = addon.addMember(teamName,user,false);
-        console.log(output);
-        if(output.error == ''){
-            if(output.message === "member added successfully") {
-                if(output.allMemberJoined){
-                    let members = output.members.split(' ');
-                    
-                    const foldername = addon.createUniqueCredentials();
-                    console.log(foldername);
-                    const shares = addon.getShares(foldername,output.memberCnt,output.threshold);
-                    console.log(shares);
-                    db.queryAsync("INSERT INTO team(name,membercnt,threshold) VALUES($1,$2,$3)",[output.teamName,output.memberCnt,output.threshold])
-                    .then(function(){
+    let output = addon.addMember(teamName, user, false);
+
+    if (output.error == '') {
+        if (output.message === "member added successfully") {
+            if (output.allMemberJoined) {
+                let members = output.members.split(' ');
+
+                const secret = addon.createUniqueSecret();
+                console.log(secret);
+                const shares = addon.getShares(secret, output.memberCnt, output.threshold);
+                console.log(shares);
+                db.queryAsync("INSERT INTO team(name,membercnt,threshold) VALUES($1,$2,$3)", [output.teamName, output.memberCnt, output.threshold])
+                    .then(function () {
                         console.log("team added in database");
                     })
-                    .catch(function(err) {
+                    .catch(function (err) {
                         console.log(err);
                     })
-                    let x = foldername.length * 2;
-                    let temp =[];
-                    let j=0,cnt=0;
-                    
-                    for(let i= 0;i<output.memberCnt;i++) {
-                        temp=[];
-                        cnt=0;
-                        while(cnt < x){
-                            temp.push(shares[j]);
-                            j++;
-                            cnt++;
-                        }
-                        console.log(`shares of ${members[i]}=>`,temp);
-                        db.queryAsync("INSERT INTO share(share) VALUES($1) RETURNING id",[temp])
-                        .then(function(result){
-                            let id  = result.rows[0].id;
+
+                let x = secret.length * 2;
+                let temp = [];
+                let j = 0, cnt = 0;
+
+                for (let i = 0; i < output.memberCnt; i++) {
+                    temp = [];
+                    cnt = 0;
+                    while (cnt < x) {
+                        temp.push(shares[j]);
+                        j++;
+                        cnt++;
+                    }
+                    console.log(`shares of ${members[i]}=>`, temp);
+                    db.queryAsync("INSERT INTO share(share) VALUES($1) RETURNING id", [temp])
+                        .then(function (result) {
+                            let id = result.rows[0].id;
                             console.log("shares added to the database");
                             console.log(id);
-                            db.queryAsync("INSERT INTO link(teamname,membername,shareid) VALUES($1,$2,$3)",[output.teamName,members[i],id])
-                            .then(function(){
-                                console.log("link table inserted");
-                            })  
-                            .catch(function(err){
-                                console.log(err);
-                            })  
+                            db.queryAsync("INSERT INTO link(teamname,membername,shareid) VALUES($1,$2,$3)", [output.teamName, members[i], id])
+                                .then(function () {
+                                    console.log("link table inserted");
+                                })
+                                .catch(function (err) {
+                                    console.log(err);
+                                    res.statusCode = 500;
+                                    res.end();
+                                })
                         })
-                        .catch(function(err){
+                        .catch(function (err) {
+                            res.statusCode = 500;
+                            res.end();
                             console.log(err);
-                        });    
-                    }
-                    teamCreated(members,output.teamName);
-                    //creating folder...
-                    fs.mkdir(`/home/onbit-syn/data/${foldername}`,{recursive:true},(err)=>{
-                        if(err) throw err;
-                        console.log("folder created successfully");
-                    });
-                    res.statusCode = 200;
-                    res.end();
+                        });
                 }
-                else{
-                    res.statusCode = 200;
-                    res.end();
-                }
-            }
-        }
-        else{
-            res.statusCode = 500;
-            res.end();
-        }
-    }
-    else{
-        res.statusCode = 401;
-        res.end();
-    }
+                //sending notifications to all the members that team is now formed..
+                allMembersJoined(members, output.teamName);
+                //creating folder...
+                fs.mkdir(`/home/onbit-syn/data/${secret}`, { recursive: true }, (err) => {
+                    if (err) throw err;
+                    console.log("secret location to store data is formed");
+                });
 
-})
-/*
-* sends notification permission to all the members of the team...
-*/
-routes.post('/askMembers',(req,res)=>{
-    let {teamName} = req.body;
-    console.log(teamName);
-    let by = req.session.passport.user;
-    db.queryAsync("SELECT membername FROM link WHERE teamname=$1",[teamName])
-    .then(function(result){
-        let members = result.rows;
-        //insert the team in the engine..
-        db.queryAsync("SELECT membercnt,threshold FROM team WHERE name=$1",[teamName])
-        .then(function(result) {
-            let data = result.rows[0];
-            if(addon.addTeam(teamName,data.membercnt,data.threshold,true)){
-                askMembers(members,teamName,by);
                 res.statusCode = 200;
                 res.end();
             }
-            else{
-                res.statusCode = 500;
-                res.end();   
+            else {
+                res.statusCode = 200;
+                res.end();
             }
+        }
+    }
+    else {
+        res.statusCode = 500;
+        res.end();
+    }
+})
+
+
+
+
+/*
+* asks permission from all members to open team drive...
+*/
+routes.post('/askMembers', (req, res) => {
+    let { teamName } = req.body;
+    console.log(teamName);
+    let by = req.session.passport.user;
+
+    //getting all the members of team from database
+
+    db.queryAsync("SELECT membername FROM link WHERE teamname=$1", [teamName])
+        .then(function (result) {
+            let members = result.rows;
+
+            //getting complete details of team from database
+
+            db.queryAsync("SELECT membercnt,threshold FROM team WHERE name=$1", [teamName])
+                .then(function (result) {
+                    let data = result.rows[0];
+                    if (addon.addTeam(teamName, data.membercnt, data.threshold, true)) {
+                        askMembers(members, teamName, by);
+                        res.statusCode = 200;
+                        res.end();
+                    }
+                    else {
+
+                        res.statusCode = 400;
+                        res.end();
+                    }
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    res.statusCode = 500;
+                    res.end();
+                })
         })
-        .catch(function(err) {
+        .catch(function (err) {
             console.log(err);
             res.statusCode = 500;
             res.end();
         })
-        
-    })
-    .catch(function(err){
-        console.log(err);
-        res.statusCode = 500;
-        res.end();
-    })
 })
 
-
-routes.post('/allowMember', (req,res)=>{
-    let {teamName,tkn,by} = req.body;
+/*
+*   allow the specific member for the specific team to open team Drive....
+*/
+routes.post('/allowMember', (req, res) => {
+    let { teamName, by } = req.body;
     let user = req.session.passport.user;
-    
-    let token  = tkn.split('-')[0];
-    let counter = parseInt(tkn.split('-')[1],10);
-    console.log(token);
-    console.log(cnt);
+    let output = addon.addMember(teamName, user, true);
+    if (output.error == '') {
+        if (output.message === "member added successfully") {
+            if (output.allMemberJoined) {
+                console.log("all member joined successfully for reconstruction");
+                openTeam(by, teamName, { teamName: output.teamName, threshold: output.threshold, members: output.members });
 
-    let validity = hotp.verify({ token,secret,counter });
-    console.log(validity);
-    
-    if(validity) {
-        let output = addon.addMember(teamName,user,true);
-        console.log(output);
-        if(output.error == ''){
-            if(output.message === "member added successfully") {
-                if(output.allMemberJoined){
-                    console.log("all member joined successfully for recinstruction");
-                    openTeam(by,teamName,{teamName:output.teamName,threshold:output.threshold,members:output.members});
-                    
-                    res.statusCode = 200;
-                    res.end();
-                }
-                else{
-                    res.statusCode = 200;
-                    res.end();
-                }
+                res.statusCode = 200;
+                res.end();
+            }
+            else {
+                res.statusCode = 200;
+                res.end();
             }
         }
+    }
+    else {
+        res.statusCode = 400;
+        res.end();
+    }
+})
+
+routes.post('/openTeamDrive',(req,res)=>{
+    let user = req.session.passport.user;
+    if(teamDriveToOpen[user] !== undefined){
+        let timestamp = teamDriveToOpen[user].timestamp;
+        if(Date.now() - timestamp < 3600000) {
+            let members = teamDriveToOpen[user].details.members;
+            let teamName = teamDriveToOpen[user].details.teamName;
+            let threshold = teamDriveToOpen[user].details.threshold;
+            let queryString = formQuery(members,teamName);
+            console.log(queryString);
+            db.queryAsync(queryString)
+            .then(function(result){
+                let arr = [];
+                for(let i=0;i<threshold;i++) {
+                    result.rows[i].share.forEach((val)=>{
+                    arr.push(val);
+                    })
+                }
+                const kshares = new Uint8Array(arr);
+                console.log(kshares);
+                const secret  = addon.getSecret(kshares,parseInt(threshold,10));
+                console.log(secret);
+                command.addDriveTodrivesOpen({teamName : teamName,secret:secret.secret});
+                res.json({result:`${user}@${teamName}:`});
+                res.end();
+            })
+            .catch(function(err){
+                res.statusCode = 500;
+                res.end();
+            })
+        
+        }
         else{
-            res.statusCode = 500;
+            res.statusCode = 400;
             res.end();
         }
     }
     else{
-        res.statusCode = 401;
-        res.end();
-    }
-
-})
-
-routes.post('/openMyTeamDrive', (req,res)=>{
-    const {tkn,timestamp,teamName,details} = req.body;    
-    let token  = tkn.split('-')[0];
-    let counter = parseInt(tkn.split('-')[1],10);
-    console.log(token);
-    console.log(cnt);
-    console.log(timestamp);
-    let validity = hotp.verify({ token,secret,counter });
-    console.log(validity);
-    if(validity){
-        let diff = Date.now() - timestamp;
-        console.log(diff);
-        if(diff < 3600000){
-            res.redirect(url.format({
-                protocol : 'http',
-                hostname : 'localhost',
-                pathname : '/createFtpConnection',
-                port:3456,
-                query:{
-                    teamName : teamName,
-                    members : details.members,
-                    threshold : details.threshold,
-                    format : 'json'
-                }
-            }));
-        }
-        else{
-            res.statusCode = 401;
-            res.end();
-        }
-    }
-    else {
-        res.statusCode = 401;
+        res.statusCode = 400;
         res.end();
     }
 })
+
+
+function formQuery(members,teamName){
+    let queryString = "SELECT share.share FROM link INNER JOIN share on link.shareid=share.id WHERE link.membername IN(";
+    for(let i=0;i<members.length-1;i++) {
+        temp =  "'"+ `${members[i]}` + "',";
+        console.log(temp);
+        queryString += temp;
+    }
+    queryString = queryString.slice(0,queryString.length-1);
+    queryString += `) and teamname='${teamName}'`;
+
+    return queryString;
+}
 
 module.exports = {
-    routes:routes,
-    inviteMembers:inviteMembers 
+    routes: routes,
+    inviteMembers: inviteMembers
 }
 

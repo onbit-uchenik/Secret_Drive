@@ -3,7 +3,7 @@ const routes = express.Router();
 const promise = require('bluebird');
 const db = promise.promisifyAll(require('../db'));
 const addon = require('../build/Release/addon.node');
-
+//const driveHandler = promise.promisifyAll(require('../driveHandler'));
 
 let openedTeam = {};
 
@@ -36,9 +36,15 @@ routes.get('/createFtpConnection',(req,res)=>{
             console.log(secret);
             //no need of ftp now.....
             //Idea comes after discussion of aryan and anubhav....
-            
+            // driveHandler.returnTreeStructureAsync(secret).then(function(structure){
+            //     console.log(structure);
+            // })
+            // .catch(function(err){
+            //     console.log(err);
+            // })
             res.statusCode = 200;
-            res.end();
+            res.end(); 
+            
         })
         .catch(function(err){
             console.log(err);
@@ -60,5 +66,7 @@ function formQuery(members,teamName){
 
     return queryString;
 }
+
+
 
 module.exports = routes;
