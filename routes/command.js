@@ -4,7 +4,6 @@ const routes = express.Router()
 // const db = promise.promisifyAll(require('../db'))
 // const addon = require('../build/Release/addon.node')
 // const url = require('url')
-// const fs = require('fs')
 
 class Drive {
   constructor (secret, member) {
@@ -14,8 +13,6 @@ class Drive {
 }
 
 var drivesOpen = {}
-
-// const commandBox = {}
 
 function addDriveTodrivesOpen (data) {
   const { teamName, secret, member } = data
