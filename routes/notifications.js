@@ -271,32 +271,44 @@ routes.post('/openTeamDrive',(req,res)=>{
     if(teamDriveToOpen[user] !== undefined){
         let timestamp = teamDriveToOpen[user].timestamp;
         if(Date.now() - timestamp < 3600000) {
+            
             let members = teamDriveToOpen[user].details.members;
             let teamName = teamDriveToOpen[user].details.teamName;
             let threshold = teamDriveToOpen[user].details.threshold;
-            let queryString = formQuery(members,teamName);
-            console.log(queryString);
-            db.queryAsync(queryString)
-            .then(function(result){
-                let arr = [];
-                for(let i=0;i<threshold;i++) {
-                    result.rows[i].share.forEach((val)=>{
-                    arr.push(val);
-                    })
-                }
-                const kshares = new Uint8Array(arr);
-                console.log(kshares);
-                const secret  = addon.getSecret(kshares,parseInt(threshold,10));
-                console.log(secret);
-                command.addDriveTodrivesOpen({teamName : teamName,secret:secret.secret});
+            
+            if(!command.isTeamDriveOpen(teamName)) {
+                let queryString = formQuery(members,teamName);
+            
+                console.log(queryString);
+                db.queryAsync(queryString)
+                .then(function(result){
+                    let arr = [];
+                    for(let i=0;i<threshold;i++) {
+                        result.rows[i].share.forEach((val)=>{
+                        arr.push(val);
+                        })
+                    }
+                    const kshares = new Uint8Array(arr);
+                    console.log(kshares);
+                    const secret  = addon.getSecret(kshares,parseInt(threshold,10));
+                    console.log(secret);
+                    command.addDriveTodrivesOpen({'teamName' : teamName,'secret':secret.secret,'member':user});
+                    delete teamDriveToOpen[user];
+                    res.json({result:`${user}@${teamName}:`});
+                    res.end();
+
+                })
+                .catch(function(err){
+                    delete teamDriveToOpen[user];
+                    res.statusCode = 500;
+                    res.end();
+                })
+            }
+            else {
+                console.log("idharrrr......");
+                command.addMemberToDriveOpenend({'teamName':teamName,'member':user});
                 res.json({result:`${user}@${teamName}:`});
-                res.end();
-            })
-            .catch(function(err){
-                res.statusCode = 500;
-                res.end();
-            })
-        
+            }
         }
         else{
             res.statusCode = 400;

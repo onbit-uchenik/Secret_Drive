@@ -34,33 +34,141 @@ term.attachCustomKeyEventHandler(function(event){
                 .then(function(response){
                 if (response.status !== 200) {
                     console.log('Looks like there was a problem. Status Code: ' + response.status);
+                    term.write("\r\n" +session.current_command +": either command not found or session is expired kindly login again")
+                    term.write("\r\n" + session.prefix + session.directory);
+                    session.history.push(session.current_command);
+                    session.current_command ="";
+                    session.historyLength++;
+                    session.lock = false;
                     return;
-                    }
+                }
 
                     response.json().then(function(data){
                         session.prefix = data.result;
                         term.write("\r\n" + session.prefix + session.directory);
+                        session.history.push(session.current_command);
+                        session.current_command ="";
+                        session.historyLength++;
                         session.lock = false;
                     })
                     .catch(function(err){
                         console.log("oops some error while parsing the response", err);
+                        session.history.push(session.current_command);
+                        session.current_command ="";
+                        session.historyLength++;
                         session.lock = false;
                     })
                 })
                 .catch(function (err) {
                     console.log('Fetch Error :-S', err);
+                    session.history.push(session.current_command);
+                    session.current_command ="";
+                    session.historyLength++;
                     session.lock = false;
                 })
             }
             else{
                 //fetch the result of the desired command..
-                term.write("\r\n" + "Running the command...");
+                term.write("\r\n" + "running the command kindly wait....");
                 session.lock = true;
-                setTimeout(function(){
-                    term.write("\r\n"+"drwxr-xr-x  3 onbit-syn onbit-syn 4096 Jun  1 23:45");
-                    term.write("\r\n" + session.prefix + session.directory);
-                    session.lock = false;
-                },2000);
+                let teamName = session.prefix.split('@')[1];
+                teamName = teamName.substring(0,teamName.length-1);
+                if(session.current_command === 'exit') { 
+                    fetch('/command/exit',{
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        headers: {
+                        'Content-Type': 'application/json'
+                        },
+                    
+                        body: JSON.stringify({ 'command' : session.current_command,'teamName':teamName})
+                        }
+                    )
+                    .then(function(response){
+                    if (response.status !== 200) {
+                        console.log('Looks like there was a problem. Status Code: ' + response.status);
+                        term.write("\r\n" +session.current_command +": either command not found or session is expired kindly login again")
+                        term.write("\r\n" + session.prefix + session.directory);
+                        session.history.push(session.current_command);
+                        session.current_command ="";
+                        session.historyLength++;
+                        session.lock = false;
+                        return;
+                    }
+
+                        response.json().then(function(data){
+                            session.prefix = "";
+                            session.directory = "~$ ";
+                            term.write("\r\n" + "GoodBye...")
+                            term.write("\r\n" + session.prefix + session.directory);
+                            session.history.push(session.current_command);
+                            session.current_command ="";
+                            session.historyLength++;
+                            session.lock = false;
+                        })
+                        .catch(function(err){
+                            console.log("oops some error while parsing the response", err);
+                            session.history.push(session.current_command);
+                            session.current_command ="";
+                            session.historyLength++;
+                            session.lock = false;
+                        })
+                    })
+                    .catch(function (err) {
+                        console.log('Fetch Error :-S', err);
+                        session.history.push(session.current_command);
+                        session.current_command ="";
+                        session.historyLength++;
+                        session.lock = false;
+                    })
+                }
+                else{
+                    fetch('/command',{
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        headers: {
+                        'Content-Type': 'application/json'
+                        },
+                    
+                        body: JSON.stringify({ 'command' : session.current_command,'teamName':teamName})
+                        }
+                    )
+                    .then(function(response){
+                    if (response.status !== 200) {
+                        console.log('Looks like there was a problem. Status Code: ' + response.status);
+                        term.write("\r\n" +session.current_command +": either command not found or session is expired kindly login again")
+                        term.write("\r\n" + session.prefix + session.directory);
+                        session.history.push(session.current_command);
+                        session.current_command ="";
+                        session.historyLength++;
+                        session.lock=false;
+                        return;
+                    }
+
+                        response.json().then(function(data){
+                            term.write("\r\n" + data.result);
+                            term.write("\r\n" + session.prefix + session.directory);
+                            session.history.push(session.current_command);
+                            session.current_command ="";
+                            session.historyLength++;
+                            session.lock = false;
+                        })
+                        .catch(function(err){
+                            console.log("oops some error while parsing the response", err);
+                            session.history.push(session.current_command);
+                            session.current_command ="";
+                            session.historyLength++;
+                            session.lock = false;
+                        })
+                    })
+                    .catch(function (err) {
+                        console.log('Fetch Error :-S', err);
+                        session.history.push(session.current_command);
+                        session.current_command ="";
+                        session.historyLength++;
+                        session.lock = false;
+                    })
+                }
             }
         }
         else if(event.code === 'ControlLeft' || event.code==='ControlRight' || event.code==='ShiftLeft' || event.code==='ShiftRight' || event.code==='AltLeft' || event.code === 'AltRight' || event.code==='Tab');
