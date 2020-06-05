@@ -13,9 +13,10 @@ const cookieParser = require('cookie-parser')
 const flash = require('connect-flash')
 const config = require('./config')
 const createNewTeam = require('./routes/createNewTeam')
-const notifications = require('./routes/notifications').routes
+const notifications = require('./routes/HandleNotifications').routes
 const myTeams = require('./routes/myTeams')
 const command = require('./routes/command').routes
+const fileUpload = require('express-fileupload')
 
 const app = express()
 
@@ -32,7 +33,7 @@ app.set('views', path.join(__dirname, 'views'))
 app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-
+app.use(fileUpload())
 app.use(cookieParser(config.cookie.secret))
 
 app.use(session({
@@ -60,6 +61,7 @@ app.use(function (req, res, next) {
 })
 
 const checkAuthenticated = function (req, res, next) {
+  console.log(req.body)
   if (req.isAuthenticated()) {
     console.log(req.session.passport.user)
     res.set('Cache-control', 'no-cache, private, no-store, must-revalidate, post-check=0,pre-check=0')
@@ -85,6 +87,8 @@ app.post('/askMembers', checkAuthenticated, notifications)
 app.post('/openTeamDrive', checkAuthenticated, notifications)
 app.post('/command', checkAuthenticated, command)
 app.post('/command/exit', checkAuthenticated, command)
+app.post('/command/upload', checkAuthenticated, command)
+
 server.on('close', () => {
   console.log('Closed express server')
 

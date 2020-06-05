@@ -3,7 +3,7 @@ const routes = express.Router()
 const promise = require('bluebird')
 const db = promise.promisifyAll(require('../db'))
 const addon = require('../build/Release/addon.node')
-const notifications = require('./notifications')
+const notifications = require('./HandleNotifications')
 
 routes.get('/createNewTeam', (req, res) => {
   res.render('createTeam')
