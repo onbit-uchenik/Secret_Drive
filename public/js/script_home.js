@@ -16,8 +16,8 @@ btn.onclick = function getNotifications () {
         data.forEach((e) => {
           if (e.notification.type === "joinTeam") {
             createJoinButtonNotification(e.notification);
-          } else if (e.notification.type === "allowMember") {
-            createAllowMemberButtonNotification(e.notification);
+          } else if (e.notification.type === "permissionToOpenDrive") {
+            createPermissionToOpenDriveButtonNotification(e.notification);
           } else if (e.notification.type === "allMembersJoined") {
             createAllMembersJoinedNotification(e.notification);
           } else if (e.notification.type === "openTeam") {
@@ -90,11 +90,11 @@ function createJoinButtonNotification (notification) {
   notificationsBlock.appendChild(button);
 }
 
-function createAllowMemberButtonNotification (notification) {
+function createPermissionToOpenDriveButtonNotification (notification) {
   const button = document.createElement("button");
-  button.innerHTML = `Allow member ${notification.by} for team ${notification.teamname}`;
+  button.innerHTML = `Allow member ${notification.initiator} for team ${notification.drivename}`;
   button.onclick = function joinTeam () {
-    console.log(`Allow member ${notification.by} for team ${notification.teamname}`);
+    console.log(`Allow member ${notification.initiator} for team ${notification.drivename}`);
     fetch("/allowMember",
       {
         method: "POST",
@@ -102,7 +102,7 @@ function createAllowMemberButtonNotification (notification) {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ teamname: notification.teamname, by: notification.by })
+        body: JSON.stringify({ teamname: notification.drivename, by: notification.initiator })
       }
     )
       .then(function (response) {
@@ -137,7 +137,7 @@ function createMyTeamButton (team) {
   button.innerHTML = `Team ${team.teamname}`;
   button.onclick = function openteamDrive () {
     console.log(`requesting to open Team ${team.teamname}`);
-    fetch("/askMembers",
+    fetch("/askfrommembers",
       {
         method: "POST",
         credentials: "same-origin",

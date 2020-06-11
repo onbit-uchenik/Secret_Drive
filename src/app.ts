@@ -13,7 +13,7 @@ import passport = require("passport");
 import * as passportConfig from "./config/passport";
 import * as userController from "./controllers/user";
 import * as accountController from "./controllers/account";
-
+import * as driveController from "./controllers/drive";
 const app = express();
 
 app.set("port", PORT);
@@ -69,5 +69,6 @@ app.post("/createnewteam",passportConfig.isAuthenticated,accountController.postC
 app.get("/notifications",passportConfig.isAuthenticated, accountController.getNotifications);
 app.post("/joinTeam", passportConfig.isAuthenticated, accountController.joinTeam);
 app.get("/myTeams",passportConfig.isAuthenticated, accountController.getMyTeams);
+app.post("/askfrommembers",passportConfig.isAuthenticated, driveController.postAskFromMembers);
 
 export default app;
