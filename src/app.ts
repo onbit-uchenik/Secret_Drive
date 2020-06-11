@@ -66,5 +66,8 @@ app.get("/logout",passportConfig.isAuthenticated,userController.getLogout);
 app.get("/account",passportConfig.isAuthenticated,accountController.getAccount);
 app.get("/createnewteam",passportConfig.isAuthenticated,accountController.getCreateNewTeam);
 app.post("/createnewteam",passportConfig.isAuthenticated,accountController.postCreateNewTeam);
+app.get("/notifications",passportConfig.isAuthenticated, accountController.getNotifications);
+app.post("/joinTeam", passportConfig.isAuthenticated, accountController.joinTeam);
+app.get("/myTeams",passportConfig.isAuthenticated, accountController.getMyTeams);
 
 export default app;

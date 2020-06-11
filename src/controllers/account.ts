@@ -2,7 +2,9 @@ import {Request, Response, NextFunction} from "express";
 import {query} from "../db";
 import { QueryResult } from "pg";
 import addon = require("../../build/Release/addon.node");
-
+import * as notification from  "../config/notifications";
+import fs = require("fs");
+import logger from "../util/logger";
 
 /**
  * 
@@ -64,15 +66,33 @@ export const postCreateNewTeam = (req:Request, res:Response) => {
       query("SELECT name FROM atithi WHERE " + x,members)
         .then(function(result:QueryResult){
           const membersIndb = result.rows;
+          console.log(membersIndb);
           if(membersIndb.length === membercnt){
-            
+            console.log("all members exists");
             if(!addon.addTeam(teamname, membercnt, thresholdmembercnt, "construction")){
               const err = "team already exist with this team name, kindly choose new Team Name";
               res.render("createTeam", { err: err });
               return;
             }
-
-            
+            notification.inviteMembersNotification(members,teamname,req.session.passport.user);
+            req.flash("success_message", "team created successfully");
+            res.redirect("/account");
+          } else {
+            let j =0;
+            let err = "";
+            for(let i=0;i<membercnt;i++) {
+              while(j < members.length && membersIndb[i].name !== members[j]) {
+                err += (members[j]) + " ";
+                j++;
+              }
+              j++;
+            }
+            while (j < members.length) {
+              err += (members[j]) + " ";
+              j++;
+            }
+            err += "members not yet registered, kindly invite them first";
+            res.render("createTeam",{err:err});
           }
           
         });
@@ -82,3 +102,145 @@ export const postCreateNewTeam = (req:Request, res:Response) => {
 
 };
 
+
+/**
+ * 
+ * @param req Request
+ * @param res Response
+ * GET /notifications
+ */
+export const getNotifications = (req:Request, res: Response) => {
+  const username = req.session.passport.user;
+  res.statusCode = 200;
+  res.json(notification.getNotificationsOfUser(username));
+  res.end();
+};
+
+
+
+/**
+ * 
+ * @param req Request 
+ * @param res Response
+ * POST /joinTeam
+ */
+export const joinTeam = (req: Request, res:Response) => {
+  const {teamname}  = req.body;
+  const username = req.session.passport.user;
+  const output = addon.addMember(teamname,username,"construction");
+
+  console.log(output);
+
+  if(output.error !== "") {
+    res.statusCode = 400;
+    res.end();
+    return;
+  }
+
+  if(output.message !== "member added successfully") {
+    res.statusCode = 400;
+    res.statusMessage = output.message;
+    res.end();
+    return;
+  }
+
+  if(!output.allMembersJoined) {
+    res.statusCode = 200;
+    res.end();
+    return;
+  }
+  // calculating secret.
+  const secret = addon.createUniqueSecret();
+  console.log(secret);
+  
+  // calculating shares.
+  const shares = addon.getShares(secret,output.membercnt,output.thresholdmembercnt);
+  console.log(shares);
+
+  // adding team in the database.
+  query("INSERT INTO teams(teamname,thresholdmembercnt,membercnt) VALUES($1,$2,$3)",[output.teamname,output.thresholdmembercnt,output.membercnt])
+    .then(function(){
+      console.log("team added in database");
+      let j = 0;
+      const x =  secret.length * 2;
+      const sharesEachMember  = [];
+      for(let i=0; i<output.membercnt; i++) {
+        let temp = [];
+        let cnt = 0;
+        
+        while (cnt < x) {
+          temp.push(shares[j]);
+          j++;
+          cnt++;
+        }
+        
+        console.log(`shares of ${output.members[i]}=>`, temp);
+        sharesEachMember.push(temp);
+      }
+      let iteminserted = 0;
+      // addding shares of every member in the database.
+      sharesEachMember.forEach((e,index) => {
+        query("INSERT INTO shares(share) VALUES($1) RETURNING id",[e])
+          .then(function(result: QueryResult){
+            const id = result.rows[0].id;
+            // adding the shares in link table...
+            query("INSERT INTO link(teamname, membername, shareid) VALUES($1,$2,$3)",[output.teamname, output.members[index],id])
+              .then(function() {
+                iteminserted++;
+                console.log("shares inserted in the link table for member",output.members[index]);
+                if(iteminserted === output.membercnt) {
+                  //send notification and make a new table....
+                  notification.teamCreatedNotification(output.members,output.teamname);
+                  fs.mkdir(`/home/onbit-syn/data/${secret}`, { recursive: true }, (err) => {
+                    if (err) throw err;
+                    console.log("secret location to store data is formed");
+                    res.statusCode = 200;
+                    res.end();
+                  });
+                }
+              })
+              .catch(function(err) {
+                iteminserted++;
+                console.log("error while inserting in the link table", err);
+
+              });
+            
+          })
+          .catch(function(err){
+            console.log("error encountered while inserting shares in the database",err);
+          });
+      });
+      
+        
+    })
+    .catch(function(err){
+      console.log(err);
+      res.statusCode = 500;
+      res.end;
+    });
+};
+
+
+/**
+ * 
+ * @param req Request
+ * @param res Response
+ * GET /myTeams
+ */
+
+export const getMyTeams = (req: Request, res:Response) => {
+  const username = req.session.passport.user;
+  query("SELECT teamname FROM link WHERE membername=$1",[username])
+  .then(function(result:QueryResult){
+    const data = result.rows;
+    res.statusCode = 200;
+    res.json(data);
+    res.end();
+  })
+  .catch(function(err) {
+    logger.debug("error while getting the teamname for user " + username + " " + err);
+    res.statusCode = 500;
+    res.end();
+  });
+
+};

@@ -97,8 +97,8 @@ Napi::Boolean engine::addTeamWrapper(const Napi::CallbackInfo& info) {
     } else{
       type = true;
     }
-
-    return Napi::Boolean::New(env,engine::addTeam(team_name_ptr,membercnt_ptr,threshold_ptr,type));
+    bool ans = engine::addTeam(team_name_ptr,membercnt_ptr,threshold_ptr,type);
+    return Napi::Boolean::New(env,ans);
 }
 
 

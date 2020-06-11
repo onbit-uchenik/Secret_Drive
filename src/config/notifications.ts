@@ -13,13 +13,14 @@ interface configNotification{
 
 class Notification{
   notification: configNotification;
-  constructor(notification: configNotification){
-    this.notification.to = notification.to;
-    if(notification.from) this.notification.from = notification.from;
-    this.notification.type = notification.type;
-    if(notification.teamname) this.notification.teamname = notification.teamname;
-    if(notification.drivename) this.notification.drivename = notification.drivename;
-    if(notification.initiator) this.notification.initiator = notification.initiator;
+  constructor(x: configNotification){
+    this.notification = {to:"",type:""};
+    this.notification.to = x.to;
+    if(x.from) this.notification.from = x.from;
+    this.notification.type = x.type;
+    if(x.teamname) this.notification.teamname = x.teamname;
+    if(x.drivename) this.notification.drivename = x.drivename;
+    if(x.initiator) this.notification.initiator = x.initiator;
   }
 }
 

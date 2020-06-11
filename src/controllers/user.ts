@@ -5,6 +5,7 @@ import { QueryResult } from "pg";
 import bcrypt = require("bcryptjs");
 import logger from "../util/logger";
 import passport = require("passport");
+import {validPasswordLength} from "../env";
 /**
  * GET /signup
  */
@@ -23,11 +24,12 @@ export const postSignup = async (req: Request, res: Response) => {
   
   await check("email").isEmail().normalizeEmail().run(req);
   await check("username").notEmpty().run(req);
-  await check("password").isLength({min: 3}).run(req);
+  await check("password").isLength({min:validPasswordLength }).run(req);
   await check("confirmPassword").equals(req.body.password).run(req);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     res.statusCode = 422;
+    console.log(errors);
     let err = "";
     errors.array().forEach(element => {
       if(element.param === "confirmPassword") {

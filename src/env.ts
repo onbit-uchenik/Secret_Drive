@@ -14,3 +14,5 @@ export const dbConfig = {
   connectionTimeoutMillis: 0,
   idleTimeoutMillis: 0
 };
+
+export const validPasswordLength = 1;

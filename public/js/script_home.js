@@ -13,15 +13,15 @@ btn.onclick = function getNotifications () {
         return;
       }
       response.json().then(function (data) {
-        data.forEach((notification) => {
-          if (notification.type === "joinTeam") {
-            createJoinButtonNotification(notification);
-          } else if (notification.type === "allowMember") {
-            createAllowMemberButtonNotification(notification);
-          } else if (notification.type === "allMembersJoined") {
-            createAllMembersJoinedNotification(notification);
-          } else if (notification.type === "openTeam") {
-            createOpenTeamButtonNotification(notification);
+        data.forEach((e) => {
+          if (e.notification.type === "joinTeam") {
+            createJoinButtonNotification(e.notification);
+          } else if (e.notification.type === "allowMember") {
+            createAllowMemberButtonNotification(e.notification);
+          } else if (e.notification.type === "allMembersJoined") {
+            createAllMembersJoinedNotification(e.notification);
+          } else if (e.notification.type === "openTeam") {
+            createOpenTeamButtonNotification(e.notification);
           }
         });
       })
@@ -62,9 +62,9 @@ teams.onclick = function getTeams () {
 
 function createJoinButtonNotification (notification) {
   const button = document.createElement("button");
-  button.innerHTML = `Join team ${notification.teamName}`;
+  button.innerHTML = `Join team ${notification.teamname}`;
   button.onclick = function joinTeam () {
-    console.log(`Join team ${notification.teamName}`);
+    console.log(`Join team ${notification.teamname}`);
     fetch("/joinTeam",
       {
         method: "POST",
@@ -72,7 +72,7 @@ function createJoinButtonNotification (notification) {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ teamName: notification.teamName })
+        body: JSON.stringify({ teamname: notification.teamname })
       }
     ).then(function (response) {
       if (response.status !== 200) {
@@ -92,9 +92,9 @@ function createJoinButtonNotification (notification) {
 
 function createAllowMemberButtonNotification (notification) {
   const button = document.createElement("button");
-  button.innerHTML = `Allow member ${notification.by} for team ${notification.teamName}`;
+  button.innerHTML = `Allow member ${notification.by} for team ${notification.teamname}`;
   button.onclick = function joinTeam () {
-    console.log(`Allow member ${notification.by} for team ${notification.teamName}`);
+    console.log(`Allow member ${notification.by} for team ${notification.teamname}`);
     fetch("/allowMember",
       {
         method: "POST",
@@ -102,7 +102,7 @@ function createAllowMemberButtonNotification (notification) {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ teamName: notification.teamName, by: notification.by })
+        body: JSON.stringify({ teamname: notification.teamname, by: notification.by })
       }
     )
       .then(function (response) {
@@ -125,7 +125,7 @@ function createAllowMemberButtonNotification (notification) {
 function createAllMembersJoinedNotification (notification) {
   console.log(notification);
   const p = document.createElement("p");
-  p.innerHTML = `Team created ${notification.teamName}`;
+  p.innerHTML = `Team created ${notification.teamname}`;
   p.onclick = function () {
     notificationsBlock.removeChild(p);
   };
@@ -144,7 +144,7 @@ function createMyTeamButton (team) {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ teamName: team.teamname })
+        body: JSON.stringify({ teamname: team.teamname })
       }
     )
       .then(function (response) {
@@ -164,7 +164,7 @@ function createMyTeamButton (team) {
 
 function createOpenTeamButtonNotification (notification) {
   const p = document.createElement("p");
-  p.innerHTML = `You can now open ${notification.teamName} drive go to terminal and type command open team drive ${notification.teamName}`;
+  p.innerHTML = `You can now open ${notification.teamname} drive go to terminal and type command open team drive ${notification.teamname}`;
   notificationsBlock.appendChild(p);
   p.onclick = function () {
     notificationsBlock.removeChild(p);
