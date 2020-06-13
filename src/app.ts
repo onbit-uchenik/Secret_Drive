@@ -70,5 +70,7 @@ app.get("/notifications",passportConfig.isAuthenticated, accountController.getNo
 app.post("/joinTeam", passportConfig.isAuthenticated, accountController.joinTeam);
 app.get("/myTeams",passportConfig.isAuthenticated, accountController.getMyTeams);
 app.post("/askfrommembers",passportConfig.isAuthenticated, driveController.postAskFromMembers);
+app.post("/allowMember",passportConfig.isAuthenticated, driveController.postAllowMember);
+
 
 export default app;

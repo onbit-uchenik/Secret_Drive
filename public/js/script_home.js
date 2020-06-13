@@ -102,7 +102,7 @@ function createPermissionToOpenDriveButtonNotification (notification) {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ teamname: notification.drivename, by: notification.initiator })
+        body: JSON.stringify({ teamname: notification.drivename, initiator: notification.initiator })
       }
     )
       .then(function (response) {

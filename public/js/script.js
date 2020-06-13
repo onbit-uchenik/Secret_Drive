@@ -25,7 +25,7 @@ async function keyboardHandler(event) {
 
   if (event.type === "keydown" && !session.lock) {
     if (event.code === "Enter") {
-      await parseCommand();
+      await runCommand(session.current_command);
     } else if (event.code === "ControlLeft" || event.code === "ControlRight" || event.code === "ShiftLeft" || event.code === "ShiftRight" || event.code === "AltLeft" || event.code === "AltRight" || event.code === "Tab") {
       // do nothing
     } else if (event.code === "ArrowLeft") {
@@ -120,9 +120,9 @@ function runCommand(cmnd) {
 const commandBox = {
   open: function(cmnd) {
     return new Promise(function (resolve,reject) {
-      const route = "/openTeamDrive";
-      const driveName = cmnd.split(" ")[3];
-      sendCommandToServer(route,{driveName: driveName})
+      const route = "/openDrive";
+      const drivename = cmnd.split(" ")[3];
+      sendCommandToServer(route,{drivename: drivename})
         .then(function(result){
           session.prefix = result;
           resolve();

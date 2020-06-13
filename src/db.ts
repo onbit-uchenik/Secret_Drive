@@ -4,7 +4,7 @@ import { Promise } from "bluebird";
 
 export const pool = new pg.Pool(dbConfig);
 
-export function query(sqlcommand: string, params: Array<any>) {
+export function query(sqlcommand: string, params?: Array<any>) {
   
   return new Promise<pg.QueryResult<any>>((resolve, reject) => {
     pool.query(sqlcommand,params)
