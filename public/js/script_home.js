@@ -20,7 +20,7 @@ btn.onclick = function getNotifications () {
             createPermissionToOpenDriveButtonNotification(e.notification);
           } else if (e.notification.type === "allMembersJoined") {
             createAllMembersJoinedNotification(e.notification);
-          } else if (e.notification.type === "openTeam") {
+          } else if (e.notification.type === "driveOpenSuccessful") {
             createOpenTeamButtonNotification(e.notification);
           }
         });
@@ -102,7 +102,7 @@ function createPermissionToOpenDriveButtonNotification (notification) {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ teamname: notification.drivename, initiator: notification.initiator })
+        body: JSON.stringify({ drivename: notification.drivename, initiator: notification.initiator })
       }
     )
       .then(function (response) {
@@ -164,7 +164,7 @@ function createMyTeamButton (team) {
 
 function createOpenTeamButtonNotification (notification) {
   const p = document.createElement("p");
-  p.innerHTML = `You can now open ${notification.teamname} drive go to terminal and type command open team drive ${notification.teamname}`;
+  p.innerHTML = `You can now open ${notification.drivename} drive go to terminal and type command open team drive ${notification.drivename}`;
   notificationsBlock.appendChild(p);
   p.onclick = function () {
     notificationsBlock.removeChild(p);

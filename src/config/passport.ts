@@ -49,6 +49,7 @@ export const isAuthenticated = (req:Request, res:Response, next:NextFunction) =>
     res.set("Cache-control", "no-cache, private, no-store, must-revalidate, post-check=0,pre-check=0");
     return next();
   } else {
+    console.log("the request was not authenticated");
     res.redirect("/login");
   }
 };

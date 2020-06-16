@@ -63,10 +63,13 @@ export const addDriveToDriveToOpen = function (initiator: string, currentDrive:D
  * @return boolean if already openend return true else false;
  */
 export const isDriveAlreadyOpened =  function (drivename: string , membername: string):boolean {
+  console.log("areeee bhaiiiii ");
   if(openDrives[drivename] === undefined) {
     return false;
-  }  
-  openDrives[drivename].push(membername);
+  }
+  console.log("ddfwefew",openDrives);  
+  openDrives[drivename].members.push(membername);
+  console.log("qqqqq",openDrives);
   return true;
 };
 /**
@@ -75,11 +78,34 @@ export const isDriveAlreadyOpened =  function (drivename: string , membername: s
  * @param membername string 
  * @return boolean
  */
-export const addOpenDrive = function (drivename: string, membername: string): boolean {
+export const addOpenDrive = function (drivename: string, membername: string,secret: string): boolean {
   if(openDrives[drivename] !== undefined) {
     return false;
   }
-  openDrives[drivename] = [membername];
+  openDrives[drivename] = {secret: secret,members:[membername]};
+  console.log(openDrives);
+  return true;
+};
+
+export const closeDrive = function (drivename: string, membername: string): boolean {
+  console.log(drivename);
+  console.log(openDrives);
+  if(openDrives[drivename]=== undefined) {
+    return false;
+  }
+  if (openDrives[drivename].members.length <= 1) {
+    delete openDrives[drivename];
+    return true;
+  }
+  const arr = [];
+  for(let i=0;i<openDrives[drivename].members.length;i++) {
+    if(openDrives[drivename].members[i] !== membername) {
+      arr.push(openDrives[drivename].members[i]);
+    } 
+  }
+  console.log(arr);
+  openDrives[drivename].members = arr;
+  console.log(openDrives[drivename].members);
   return true;
 };
 

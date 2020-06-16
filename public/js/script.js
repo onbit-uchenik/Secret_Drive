@@ -12,12 +12,12 @@ const session = {
 };
 // attaches all event listeners and intialises to the script.
 
-function init () {
+(function() {
   term.open(document.getElementById("terminal"));
   term.write(session.prefix + session.directory);
   term.attachCustomKeyEventHandler(keyboardHandler);
   fileSelector.onchange = selectFileFromLocal;
-}
+})();
 
 async function keyboardHandler(event) {
   event.preventDefault();
@@ -89,8 +89,9 @@ function uploadFile (formData) {
 function runCommand(cmnd) {
   return new Promise(function () {
     session.lock = true;
-    if(commandBox[cmnd] !== undefined) {
-      commandBox[cmnd.split(" ")[0]](cmnd)
+    const command = cmnd.split(" ")[0];
+    if(commandBox[command] !== undefined) {
+      commandBox[command](cmnd)
       .then(function(){
         term.write("\r\n" + session.prefix + session.directory);
         session.history.push(session.current_command);
@@ -109,6 +110,7 @@ function runCommand(cmnd) {
     }
     else {
       term.write("\r\n" + session.current_command + ": command not found");
+      term.write("\r\n" + session.prefix + session.directory);
       session.history.push(session.current_command);
       session.current_command = "";
       session.historyLength++;
@@ -131,8 +133,52 @@ const commandBox = {
           reject(err);
         });
     });
+  },
+  mkdir: function(cmnd) {
+    normalCommand(cmnd);
+  },
+  rm: function(cmnd) {
+    normalCommand(cmnd);
+  },
+  move: function(cmnd) {
+    normalCommand(cmnd);
+  },
+  copy: function(cmnd) {
+    normalCommand(cmnd); 
+  },
+  exit: function(cmnd) {
+    return new Promise(function (resolve,reject) {
+      const route = "/closedrive";
+      let drivename = session.prefix.split("@")[1];
+      drivename = drivename.substr(0,drivename.length-1);
+      sendCommandToServer(route,{drivename:drivename})
+        .then(function(){
+          session.prefix = "";
+          session.directory = "~$";
+          resolve();
+        })
+        .catch(function(err) {
+          reject(err);
+        });
+    });
   }
+
 };
+
+function normalCommand(cmnd){
+  return new Promise(function(resolve, reject) {
+    const route = "/command";
+    sendCommandToServer(route,{command:cmnd})
+    .then(function(result) {
+      term.write("\r\n" + result);
+      resolve();
+    })
+    .catch(function(err){
+      reject(err);
+    });
+  });
+}
+
 
 function sendCommandToServer(route,data) {
   return new Promise(function (resolve,reject) {

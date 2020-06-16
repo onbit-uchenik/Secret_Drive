@@ -31,8 +31,7 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
   cookie: {
-    maxAge : 24* 60 * 60,
-    secure: false
+    maxAge : 24 * 60 * 60 * 1000
   }
 }));
 
@@ -71,6 +70,6 @@ app.post("/joinTeam", passportConfig.isAuthenticated, accountController.joinTeam
 app.get("/myTeams",passportConfig.isAuthenticated, accountController.getMyTeams);
 app.post("/askfrommembers",passportConfig.isAuthenticated, driveController.postAskFromMembers);
 app.post("/allowMember",passportConfig.isAuthenticated, driveController.postAllowMember);
-
-
+app.post("/openDrive",passportConfig.isAuthenticated, driveController.postOpenDrive);
+app.post("/closedrive",passportConfig.isAuthenticated, driveController.closeDrive);
 export default app;

@@ -84,10 +84,15 @@ export const postAllowMember = (req:Request, res:Response) => {
   res.end();
 };
 
-
+/**
+ * 
+ * @param req Request
+ * @param res Response
+ * POST /openDrive
+ */
 export const postOpenDrive = (req:Request, res:Response) => {
   const user = req.session.passport.user;
-  const drivename = req.body;
+  const drivename = req.body.drivename;
 
   const driveDetails = drive.canDriveOpen(user);
   
@@ -98,14 +103,14 @@ export const postOpenDrive = (req:Request, res:Response) => {
   }
 
   if(drive.isDriveAlreadyOpened(drivename,user)) {
+    console.log("hwfwefwe");
     res.statusCode = 200;
-    res.json({result:`${user}@${drivename}: `});
+    res.json({result:`${user}@${drivename}:`});
     res.end();
     return;
   }
 
-  const queryString = formQuery(driveDetails.members, driveDetails.drivename);
-  query(queryString)
+  query("SELECT shares.share FROM link INNER JOIN shares ON link.shareid=shares.id WHERE teamname=$1",[driveDetails.drivename])
     .then(function (result: QueryResult) {
       const arr = [];
       
@@ -118,7 +123,7 @@ export const postOpenDrive = (req:Request, res:Response) => {
       console.log(kshares);
       const secret = addon.getSecret(kshares,driveDetails.thresholdmembercnt);
       console.log(secret);
-      drive.addOpenDrive(drivename,user);
+      drive.addOpenDrive(drivename,user,secret.secret);
       res.json({result: `${user}@${drivename}:`});
       res.end();
     })
@@ -127,19 +132,17 @@ export const postOpenDrive = (req:Request, res:Response) => {
       res.statusCode = 500;
       res.end();
     });
-
-
-
 };
 
-function formQuery (members:Array<string>, teamname:string) {
-  let queryString = "SELECT share.share FROM link INNER JOIN share on link.shareid=share.id WHERE link.membername IN(";
-  for (let i = 0; i < members.length; i++) {
-    const temp = "'" + `${members[i]}` + "',";
-    queryString += temp;
+export const closeDrive = (req:Request, res: Response) => {
+  const user = req.session.passport.user; 
+  const drivename = req.body.drivename;
+  if(!drive.closeDrive(drivename,user)) {
+    res.statusCode = 400;
+    res.end();
+    return;
   }
-  queryString = queryString.slice(0, queryString.length - 1);
-  queryString += `) and teamname='${teamname}'`;
-
-  return queryString;
-}
+  res.statusCode = 200;
+  res.json({result:""});
+  res.end();
+};
