@@ -14,6 +14,7 @@ import * as passportConfig from "./config/passport";
 import * as userController from "./controllers/user";
 import * as accountController from "./controllers/account";
 import * as driveController from "./controllers/drive";
+import * as commandController from "./controllers/command";
 const app = express();
 
 app.set("port", PORT);
@@ -72,4 +73,6 @@ app.post("/askfrommembers",passportConfig.isAuthenticated, driveController.postA
 app.post("/allowMember",passportConfig.isAuthenticated, driveController.postAllowMember);
 app.post("/openDrive",passportConfig.isAuthenticated, driveController.postOpenDrive);
 app.post("/closedrive",passportConfig.isAuthenticated, driveController.closeDrive);
+app.post("/command",passportConfig.isAuthenticated, commandController.command);
+
 export default app;

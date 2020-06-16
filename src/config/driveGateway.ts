@@ -110,4 +110,18 @@ export const closeDrive = function (drivename: string, membername: string): bool
 };
 
 
+export const getSecret = function(drivename: string, membername: string):string {
+  if(openDrives[drivename]===undefined) {
+    return undefined;
+  }
+  if(openDrives[drivename].members.has(membername)) {
+    return openDrives[drivename].secret;
+  }
+  return undefined;
+};
+
+
+export const upload = (req:Request, res:Response) => {
+  
+}
 

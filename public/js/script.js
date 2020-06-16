@@ -45,21 +45,34 @@ async function keyboardHandler(event) {
 }
 
 function selectFileFromLocal () {
-  const fileList = this.files;
-  console.log(typeof fileList);
-  divTerminal.style.display = "block";
-  fileSelector.style.display = "none";
-  Array.from(fileList).forEach(file => {
+  return new Promise(function(resolve,reject) {
+    const fileList = this.files;
+    console.log(typeof fileList);
+    divTerminal.style.display = "block";
+    fileSelector.style.display = "none";
+    let cnt = 1;
+    const fileListNotUpdatedSuccessfully = [];
+    Array.from(fileList).forEach( (file,index,array) => {
     const formData = new FormData();
     formData.append("file", file);
     uploadFile(formData)
       .then(function () {
+        if(cnt === array.length) {
+          resolve(fileListNotUpdatedSuccessfully);
+        }
         console.log("file uploaded successfully", formData.get("file").name);
+        cnt++;
       })
       .catch(function (err) {
+        fileListNotUpdatedSuccessfully.push(formData.get("file").name);
+        if(cnt === array.length) {
+          resolve(fileListNotUpdatedSuccessfully);
+        }
+        cnt++;
         console.log(err);
         console.log("error while uploading file", formData.get("file").name);
       });
+    });
   });
 }
 
@@ -161,6 +174,17 @@ const commandBox = {
           reject(err);
         });
     });
+  },
+  upload: function(cmnd) {
+    return new Promise(function(resolve) {
+      divTerminal.style.display = "none";
+      fileSelector.style.display = "block";
+      selectFileFromLocal()
+        .then(function(fileListNotUpdatedSuccessfully){
+          console.log(fileListNotUpdatedSuccessfully);
+        });
+      resolve();
+    });
   }
 
 };
@@ -168,7 +192,9 @@ const commandBox = {
 function normalCommand(cmnd){
   return new Promise(function(resolve, reject) {
     const route = "/command";
-    sendCommandToServer(route,{command:cmnd})
+    let drivename = session.prefix.split("@")[1];
+    drivename = drivename.substr(0,drivename.length-1);
+    sendCommandToServer(route,{command:cmnd,drivename:drivename})
     .then(function(result) {
       term.write("\r\n" + result);
       resolve();
