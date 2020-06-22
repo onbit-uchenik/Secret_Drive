@@ -80,6 +80,19 @@ const commandBox = {
           // if (err.code === 'ENOTEMPTY') reject(new Error('directory not empty'))
         });
     });
+  },
+  ls: function (command, secret) {
+    return new Promise(function (resolve, reject) {
+      fs.readdir(`/home/onbit-syn/data/${secret}`)
+        .then(function(result) {
+          console.log(result);
+          resolve(result.toString());
+        })
+        .catch(function(err){
+          console.log(err);
+          reject(new Error("invalid argument"));
+        });
+    });
   }
 };
 
@@ -97,6 +110,7 @@ export const command = (req:Request, res:Response) => {
   commandBox[cmnd.split(" ")[0]](cmnd,secret)
     .then(function(result){
       res.statusCode = 200;
+      console.log(result);
       res.json({result:result});
       res.end();
     })

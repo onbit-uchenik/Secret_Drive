@@ -148,16 +148,49 @@ const commandBox = {
     });
   },
   mkdir: function(cmnd) {
-    normalCommand(cmnd);
+    return new Promise(function(resolve, reject) {
+      normalCommand(cmnd)
+        .then(function() {
+          resolve();
+        })
+        .catch(function(err){
+          reject(err);
+        });
+    });
+    
   },
   rm: function(cmnd) {
-    normalCommand(cmnd);
+    return new Promise(function(resolve, reject) {
+      normalCommand(cmnd)
+        .then(function() {
+          resolve();
+        })
+        .catch(function(err){
+          reject(err);
+        });
+    });
   },
   move: function(cmnd) {
-    normalCommand(cmnd);
+    return new Promise(function(resolve, reject) {
+      normalCommand(cmnd)
+        .then(function() {
+          resolve();
+        })
+        .catch(function(err){
+          reject(err);
+        });
+    });
   },
   copy: function(cmnd) {
-    normalCommand(cmnd); 
+    return new Promise(function(resolve, reject) {
+      normalCommand(cmnd)
+        .then(function() {
+          resolve();
+        })
+        .catch(function(err){
+          reject(err);
+        });
+    }); 
   },
   exit: function(cmnd) {
     return new Promise(function (resolve,reject) {
@@ -185,6 +218,17 @@ const commandBox = {
         });
       resolve();
     });
+  },
+  ls: function(cmnd) {
+    return new Promise(function(resolve, reject) {
+      normalCommand(cmnd)
+        .then(function() {
+          resolve();
+        })
+        .catch(function(err){
+          reject(err);
+        });
+    });
   }
 
 };
@@ -199,7 +243,7 @@ function normalCommand(cmnd){
       term.write("\r\n" + result);
       resolve();
     })
-    .catch(function(err){
+    .catch(function(err) {
       reject(err);
     });
   });
@@ -231,6 +275,7 @@ function sendCommandToServer(route,data) {
           });   
       })
       .catch(function (err){
+        console.log("error while running the request in the server",err);
         reject(new Error("unable to request server"));
       });
 });

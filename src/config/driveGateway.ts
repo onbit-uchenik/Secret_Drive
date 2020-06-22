@@ -114,7 +114,14 @@ export const getSecret = function(drivename: string, membername: string):string 
   if(openDrives[drivename]===undefined) {
     return undefined;
   }
-  if(openDrives[drivename].members.has(membername)) {
+  console.log(openDrives[drivename].members);
+  let x = false;
+  openDrives[drivename].members.forEach((element) => {
+    if(element === membername) {
+      x = true;
+    }
+  });
+  if(x) {
     return openDrives[drivename].secret;
   }
   return undefined;
