@@ -134,6 +134,8 @@ export const postOpenDrive = (req:Request, res:Response) => {
     });
 };
 
+export const getOpenDrive()
+
 export const closeDrive = (req:Request, res: Response) => {
   const user = req.session.passport.user; 
   const drivename = req.body.drivename;

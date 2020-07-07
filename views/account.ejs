@@ -1,47 +1,76 @@
+<!DOCTYPE html>
 <html>
 
 <head>
-    <title>Team Drive</title>
-    <link rel="stylesheet" href="node_modules/xterm/css/xterm.css" />
-    <script src="/node_modules/xterm/lib/xterm.js"></script>
+    <title>Team Drive - Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/account.css">
+
 </head>
 
 <body>
-    <div class = "container" id="home">
-        <% if (success_message != ''){ %>
-        <div class="alert alert-dismissible alert-success">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <strong> <%= success_message %> </strong>
+    <div class="container-fluid">
+
+        <div class="row" id="heading">
+            <!-- Our Special dropdown has class show-on-hover -->
+            <div class="col">
+                <h1>Team Drive <%=user%></h1>
+            </div>
+            <div class="col d-flex justify-content-end">
+                <div class="btn-group show-on-hover ">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" onclick="getNotifications()">
+                        Notifications <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" id="notifications">
+                        
+                    </ul>
+                </div>
+            </div>
         </div>
-        <% } %>
-        <h1>Welcome <%=user%> </h1>
-        <br />
-        <form action="/logout" method="get">
-            <input type="submit" value="Logout" />
-        </form>
-        <form action="/createNewTeam" method="get">
-            <input type="submit" value="Create New Team" />
-        </form>
-
-        <button id="btn">notifications</button>
-        <div id="notifications"></div>
-        <button id="teams">My Teams</button>
-        <div id="teamsBlock"></div>
-        <div id="terminal" style="display:block"></div>
-        <input type="file" id="fileSelector" multiple style="display:none">
+        <br>
+        <div class="row">
+            <div class="col">
+                <a href="/createNewTeam">create new team</a>
+            </div>
+        </div>
+        <br>
+        <br>
     </div>
-    <script src="js/script_home.js"></script>
-    <script src="js/script.js"></script>
+    <div class="card-deck">
+        <%if(typeof teams !== 'undefined'){%>
+        <%teams.forEach( function(ele) {%>
+        <div class="card">
+            <div class="card-block">
+                <h5 class="card-title"><%=ele.teamname%></h5>
+                <p class="card-text">
+                    Open your team drive
+                </p>
+            </div>
+            <div class="card-footer">
+                <button class="btn-block btn-primary" onclick="askFromMembers('<%=ele.teamname%>')"> open</button>
+            </div>
+        </div>
 
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        <%})%>
+        <%}%>
+        </div>
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+    <script src="/js/account.js"></script>
 </body>
 
 </html>

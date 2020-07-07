@@ -13,7 +13,18 @@ import logger from "../util/logger";
  * GET /account
  */
 export const getAccount = (req: Request, res:Response) => {
-  res.render("account",{user:req.user});
+  const username = req.session.passport.user;
+  query("SELECT teamname FROM link WHERE membername=$1",[username])
+  .then(function(result:QueryResult){
+    const data = result.rows;
+    console.log(data);
+    res.render("account",{teams:data,user:username});
+  })
+  .catch(function(err) {
+    logger.debug("error while getting the teamname for user " + username + " " + err);
+    res.statusCode = 500;
+    res.end();
+  });
 };
 
 /**
