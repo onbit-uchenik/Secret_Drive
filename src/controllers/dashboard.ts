@@ -18,7 +18,7 @@ export const getAccount = (req: Request, res:Response) => {
   .then(function(result:QueryResult){
     const data = result.rows;
     console.log(data);
-    res.render("account",{teams:data,user:username});
+    res.render("dashboard",{teams:data,user:username});
   })
   .catch(function(err) {
     logger.debug("error while getting the teamname for user " + username + " " + err);

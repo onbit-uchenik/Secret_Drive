@@ -118,7 +118,7 @@ export const postLogin = async (req:Request, res:Response, next:NextFunction) =>
   await check("password").isLength({min: 1}).run(req);
   passport.authenticate("local", {
     failureRedirect: "/login",
-    successRedirect: "/account",
+    successRedirect: "/dashboard",
     failureFlash: true
   })(req, res, next);
 };
@@ -132,4 +132,10 @@ export const postLogin = async (req:Request, res:Response, next:NextFunction) =>
 export const getLogout = (req:Request, res:Response) => {
   req.logOut();
   res.redirect("/");
+};
+
+
+
+export const getThankyou = (req: Request, res: Response) => {
+  res.render("thankyou");
 };

@@ -3,7 +3,7 @@ import * as drive from "../config/driveGateway";
 import f = require("fs");
 const fs = f.promises;
 
-const commandBox = {
+export const commandBox = {
   rm: function (command, secret) {
     return new Promise(function (resolve, reject) {
       const flag = command.split(" ")[1];
@@ -81,12 +81,25 @@ const commandBox = {
         });
     });
   },
-  ls: function (command, secret) {
+  ls: function (secret,directory) {
+    if(directory !== "null") {
     return new Promise(function (resolve, reject) {
-      fs.readdir(`/home/onbit-syn/data/${secret}`)
+      fs.readdir(`/home/onbit-syn/data/${secret}/${directory}`)
         .then(function(result) {
           console.log(result);
-          resolve(result.toString());
+          resolve(result);
+        })
+        .catch(function(err){
+          console.log(err);
+          reject(new Error("invalid argument"));
+        });
+    });
+  } else {
+    return new Promise(function (resolve, reject) {
+      fs.readdir(`/home/onbit-syn/data/${secret}/`)
+        .then(function(result) {
+          console.log(result);
+          resolve(result);
         })
         .catch(function(err){
           console.log(err);
@@ -94,6 +107,7 @@ const commandBox = {
         });
     });
   }
+}
 };
 
 

@@ -5,6 +5,7 @@ import addon = require("../../build/Release/addon.node");
 import * as notification from  "../config/notifications";
 import * as drive from "../config/driveGateway";
 
+import * as command from "../controllers/command";
 
 // import fs = require("fs");
 import logger from "../util/logger";
@@ -93,7 +94,7 @@ export const postAllowMember = (req:Request, res:Response) => {
 export const postOpenDrive = (req:Request, res:Response) => {
   const user = req.session.passport.user;
   const drivename = req.body.drivename;
-
+  console.log(drivename);
   const driveDetails = drive.canDriveOpen(user);
   
   if(driveDetails === undefined) {
@@ -105,8 +106,7 @@ export const postOpenDrive = (req:Request, res:Response) => {
   if(drive.isDriveAlreadyOpened(drivename,user)) {
     console.log("hwfwefwe");
     res.statusCode = 200;
-    res.json({result:`${user}@${drivename}:`});
-    res.end();
+    res.redirect(`/drive/${drivename}/null`);
     return;
   }
 
@@ -124,8 +124,7 @@ export const postOpenDrive = (req:Request, res:Response) => {
       const secret = addon.getSecret(kshares,driveDetails.thresholdmembercnt);
       console.log(secret);
       drive.addOpenDrive(drivename,user,secret.secret);
-      res.json({result: `${user}@${drivename}:`});
-      res.end();
+      res.redirect(`/drive/${drivename}/null`);
     })
     .catch(function (err) {
       console.log(err);
@@ -134,18 +133,45 @@ export const postOpenDrive = (req:Request, res:Response) => {
     });
 };
 
-export const getOpenDrive()
+export const getOpenDrive = (req, res) => {
+  res.render("opendrive",{user:req.session.passport.user});
+}; 
 
 export const closeDrive = (req:Request, res: Response) => {
   const user = req.session.passport.user; 
   const drivename = req.body.drivename;
+  // the function if opened, closes the drive and return true else return false; 
   if(!drive.closeDrive(drivename,user)) {
     res.statusCode = 400;
     res.end();
     return;
   }
   res.statusCode = 200;
-  res.json({result:""});
-  res.end();
+  res.redirect("/thankyou");
 };
 
+
+export const getDrive = (req: Request, res:Response) => {
+  const directory = req.params.directory;
+  const drivename = req.params.drivename;
+  const username = req.session.passport.user;
+  console.log(directory);
+  console.log(drivename);
+  const secret = drive.getSecret(drivename,username);
+  if(secret === undefined) {
+    res.statusCode =400;
+    res.end();
+    return;
+  }
+
+  command.commandBox["ls"](secret, directory)
+   .then(function(result) {
+      console.log("directory content",result);
+      res.render("drive",{folders:result});  
+    })
+   .catch(function(err) {
+     console.log(err);
+     res.statusCode = 500;
+     res.end();
+   });
+};

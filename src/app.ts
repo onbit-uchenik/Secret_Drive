@@ -12,7 +12,7 @@ import passport = require("passport");
 
 import * as passportConfig from "./config/passport";
 import * as userController from "./controllers/user";
-import * as accountController from "./controllers/account";
+import * as dashboardController from "./controllers/dashboard";
 import * as driveController from "./controllers/drive";
 import * as commandController from "./controllers/command";
 const app = express();
@@ -63,16 +63,22 @@ app.post("/signup",userController.postSignup);
 app.get("/login", userController.getLogin);
 app.post("/login",userController.postLogin);
 app.get("/logout",passportConfig.isAuthenticated,userController.getLogout);
-app.get("/account",passportConfig.isAuthenticated,accountController.getAccount);
-app.get("/createnewteam",passportConfig.isAuthenticated,accountController.getCreateNewTeam);
-app.post("/createnewteam",passportConfig.isAuthenticated,accountController.postCreateNewTeam);
-app.get("/notifications",passportConfig.isAuthenticated, accountController.getNotifications);
-app.post("/joinTeam", passportConfig.isAuthenticated, accountController.joinTeam);
-app.get("/myTeams",passportConfig.isAuthenticated, accountController.getMyTeams);
+app.get("/thankyou", passportConfig.isAuthenticated, userController.getThankyou);
+
+app.get("/dashboard", passportConfig.isAuthenticated, dashboardController.getAccount);
+app.get("/createnewteam", passportConfig.isAuthenticated, dashboardController.getCreateNewTeam);
+app.post("/createnewteam", passportConfig.isAuthenticated, dashboardController.postCreateNewTeam);
+app.get("/notifications", passportConfig.isAuthenticated, dashboardController.getNotifications);
+app.post("/joinTeam",passportConfig.isAuthenticated, dashboardController.joinTeam);
+app.get("/myTeams", passportConfig.isAuthenticated, dashboardController.getMyTeams);
+
+
 app.post("/askfrommembers",passportConfig.isAuthenticated, driveController.postAskFromMembers);
 app.post("/allowMember",passportConfig.isAuthenticated, driveController.postAllowMember);
 app.post("/openDrive",passportConfig.isAuthenticated, driveController.postOpenDrive);
 app.post("/closedrive",passportConfig.isAuthenticated, driveController.closeDrive);
-app.post("/command",passportConfig.isAuthenticated, commandController.command);
+app.get("/opendrive", passportConfig.isAuthenticated, driveController.getOpenDrive);
+app.get("/drive/:drivename/:directory", passportConfig.isAuthenticated, driveController.getDrive);
 
+app.post("/command",passportConfig.isAuthenticated, commandController.command);
 export default app;
