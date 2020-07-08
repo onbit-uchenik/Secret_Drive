@@ -34,7 +34,7 @@ export const getAccount = (req: Request, res:Response) => {
  * GET /createnewteam
  */
 export const getCreateNewTeam = (req: Request, res: Response) => {
-  res.render("createTeam");
+  res.render("create_team");
 };
  /**
   * 
@@ -51,13 +51,13 @@ export const postCreateNewTeam = (req:Request, res:Response) => {
   
   if(thresholdmembercnt > membercnt ) {
     const err = "threshold members count should always be less than equal to total members";
-    res.render("createTeam", { err: err });
+    res.render("create_team", { err: err });
     return;
   }  
 
   if(membercnt !== members.length) {
     const err = "please write names of all the members";
-    res.render("createTeam", { err: err });
+    res.render("create_team", { err: err });
     return;
   }
 
@@ -66,7 +66,7 @@ export const postCreateNewTeam = (req:Request, res:Response) => {
       const data = result.rows;
       if (data.length !== 0) {
         const err = "team already exist with this team name, kindly choose new Team Name";
-        res.render("createTeam", { err: err });
+        res.render("create_team", { err: err });
         return;
       }
       let x = "";
@@ -82,12 +82,12 @@ export const postCreateNewTeam = (req:Request, res:Response) => {
             console.log("all members exists");
             if(!addon.addTeam(teamname, membercnt, thresholdmembercnt, "construction")){
               const err = "team already exist with this team name, kindly choose new Team Name";
-              res.render("createTeam", { err: err });
+              res.render("create_team", { err: err });
               return;
             }
             notification.inviteMembersNotification(members,teamname,req.session.passport.user);
             req.flash("success_message", "team created successfully");
-            res.redirect("/account");
+            res.redirect("/dashboard");
           } else {
             let j =0;
             let err = "";
@@ -103,7 +103,7 @@ export const postCreateNewTeam = (req:Request, res:Response) => {
               j++;
             }
             err += "members not yet registered, kindly invite them first";
-            res.render("createTeam",{err:err});
+            res.render("create_team",{err:err});
           }
           
         });
@@ -144,14 +144,15 @@ export const joinTeam = (req: Request, res:Response) => {
 
   if(output.error !== "") {
     res.statusCode = 400;
-    res.end();
+    req.flash("error", "You are not added to team as a member");
+    res.redirect("/dashboard");
     return;
   }
 
   if(output.message !== "member added successfully") {
     res.statusCode = 400;
-    res.statusMessage = output.message;
-    res.end();
+    req.flash("error",output.message);
+    res.redirect("/dashboard");
     return;
   }
 
@@ -205,20 +206,24 @@ export const joinTeam = (req: Request, res:Response) => {
                   fs.mkdir(`/home/onbit-syn/data/${secret}`, { recursive: true }, (err) => {
                     if (err) throw err;
                     console.log("secret location to store data is formed");
-                    res.statusCode = 200;
-                    res.end();
+                    req.flash("success_message", "You are added. All members are joined.  Shamir Team Drive Created successfully");
+                    res.redirect("/dashboard");
+
                   });
                 }
               })
               .catch(function(err) {
                 iteminserted++;
                 console.log("error while inserting in the link table", err);
-
+                req.flash("error", "error generated while creatring team drive");
+                res.redirect("/dashboard");
               });
             
           })
           .catch(function(err){
             console.log("error encountered while inserting shares in the database",err);
+            req.flash("error", "error occured while creating the drive");
+            res.redirect("/dashboard");
           });
       });
       
@@ -227,7 +232,8 @@ export const joinTeam = (req: Request, res:Response) => {
     .catch(function(err){
       console.log(err);
       res.statusCode = 500;
-      res.end;
+      req.flash("error","error occured while creating the drive");
+      res.redirect("/dashboard");
     });
 };
 

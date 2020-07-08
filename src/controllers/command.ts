@@ -1,6 +1,7 @@
-import {Request, Response, NextFunction} from "express";
+import { Request, Response, NextFunction } from "express";
 import * as drive from "../config/driveGateway";
 import f = require("fs");
+import { reject, resolve } from "bluebird";
 const fs = f.promises;
 
 export const commandBox = {
@@ -30,20 +31,36 @@ export const commandBox = {
     });
   },
 
-  mkdir: function (command, secret) {
-    return new Promise(function (resolve, reject) {
-      const directoryName = command.split(" ")[1];
-      fs.mkdir(`/home/onbit-syn/data/${secret}/${directoryName}`)
-        .then(function () {
-          resolve("sucessfull: directory Creation.");
-        })
-        .catch(function (err) {
-          if (err.code === "EINVAL") reject(new Error("invalid arguments"));
-          // if (err.code === 'ENOENT') reject(new Error('no such file or directory'))
-          if (err.code === "EACESS") reject(new Error("permission deniad"));
-          // if (err.code === 'ENOTEMPTY') reject(new Error('directory not empty'))
-        });
-    });
+  mkdir: function (secret:string, foldername:string, directory:string) {
+    if (directory !== "root") {
+      return new Promise(function (resolve, reject) {
+        fs.mkdir(`/home/onbit-syn/data/${secret}/${directory}/${foldername}`)
+          .then(function () {
+            resolve(true);
+          })
+          .catch(function (err) {
+            if (err.code === "EINVAL") reject(new Error("invalid arguments"));
+            // if (err.code === 'ENOENT') reject(new Error('no such file or directory'))
+            if (err.code === "EACESS") reject(new Error("permission deniad"));
+            // if (err.code === 'ENOTEMPTY') reject(new Error('directory not empty'))
+          });
+      });
+    }
+    else {
+      return new Promise(function (resolve, reject) {
+        fs.mkdir(`/home/onbit-syn/data/${secret}/${foldername}`)
+          .then(function () {
+            resolve(true);
+          })
+          .catch(function (err) {
+            if (err.code === "EINVAL") reject(new Error("invalid arguments"));
+            // if (err.code === 'ENOENT') reject(new Error('no such file or directory'))
+            if (err.code === "EACESS") reject(new Error("permission deniad"));
+            // if (err.code === 'ENOTEMPTY') reject(new Error('directory not empty'))
+          });
+      });
+    }
+
   },
   move: function (command, secret) { // can also be used to rename files.
     return new Promise(function (resolve, reject) {
@@ -63,7 +80,7 @@ export const commandBox = {
         });
     });
   },
-  copy: function (command, secret) {
+  copy: function (command:string, secret:string) {
     return new Promise(function (resolve, reject) {
       const sourceFile = command.split(" ")[1];
       const destinationFile = command.split(" ")[2];
@@ -81,54 +98,74 @@ export const commandBox = {
         });
     });
   },
-  ls: function (secret,directory) {
-    if(directory !== "null") {
+  ls: function (secret:string, directory:string) {
+    if (directory !== "root") {
+      return new Promise(function (resolve, reject) {
+        fs.readdir(`/home/onbit-syn/data/${secret}/${directory}`)
+          .then(function (result) {
+            console.log(result);
+            resolve(result);
+          })
+          .catch(function (err) {
+            console.log(err);
+            reject(new Error("invalid argument"));
+          });
+      });
+    } else {
+      return new Promise(function (resolve, reject) {
+        fs.readdir(`/home/onbit-syn/data/${secret}/`)
+          .then(function (result) {
+            console.log(result);
+            resolve(result);
+          })
+          .catch(function (err) {
+            console.log(err);
+            reject(new Error("invalid argument"));
+          });
+      });
+    }
+  },
+  touch: function (secret:string, directory:string, filename:string) {
     return new Promise(function (resolve, reject) {
-      fs.readdir(`/home/onbit-syn/data/${secret}/${directory}`)
-        .then(function(result) {
-          console.log(result);
-          resolve(result);
+      let path = "";
+      if (directory === "root") {
+        path = `/home/onbit-syn/data/${secret}/${filename}`;
+      }
+      else {
+        path = `/home/onbit-syn/data/${secret}/${directory}/${filename}`;
+      }
+
+      fs.writeFile(path, "")
+        .then(function () {
+          resolve();
         })
-        .catch(function(err){
-          console.log(err);
-          reject(new Error("invalid argument"));
+        .catch(function (err) {
+          reject(err);
         });
     });
-  } else {
-    return new Promise(function (resolve, reject) {
-      fs.readdir(`/home/onbit-syn/data/${secret}/`)
-        .then(function(result) {
-          console.log(result);
-          resolve(result);
-        })
-        .catch(function(err){
-          console.log(err);
-          reject(new Error("invalid argument"));
-        });
-    });
+
   }
-}
 };
 
 
-export const command = (req:Request, res:Response) => {
+export const command = (req: Request, res: Response) => {
   const user = req.session.passport.user;
   const drivename = req.body.drivename;
   const cmnd = req.body.command;
-  const secret = drive.getSecret(drivename,user);
-  if(secret === undefined) {
-    res.statusCode =400;
+  const secret = drive.getSecret(drivename, user);
+  if (secret === undefined) {
+    res.statusCode = 400;
     res.end();
     return;
   }
-  commandBox[cmnd.split(" ")[0]](cmnd,secret)
-    .then(function(result){
+  commandBox[cmnd.split(" ")[0]](cmnd, secret)
+    .then(function (result) {
       res.statusCode = 200;
       console.log(result);
-      res.json({result:result});
+      res.json({ result: result });
       res.end();
     })
-    .catch(function(err){
+    .catch(function (err) {
       console.log(err);
       res.statusCode = 500;
       res.end();

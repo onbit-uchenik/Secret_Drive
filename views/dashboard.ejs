@@ -15,7 +15,18 @@
 
 <body>
     <div class="container-fluid">
-
+        <% if (success_message != ''){ %>
+            <div class="alert alert-dismissible alert-success">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong> <%= success_message %> </strong>
+            </div>
+            <% } %>
+            <% if( error != '') { %>
+            <div class="alert alert-dismissible alert-danger">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong><%= error %></strong>
+            </div>
+            <% } %>
         <div class="row" id="heading">
             <!-- Our Special dropdown has class show-on-hover -->
             <div class="col">

@@ -15,6 +15,7 @@ import * as userController from "./controllers/user";
 import * as dashboardController from "./controllers/dashboard";
 import * as driveController from "./controllers/drive";
 import * as commandController from "./controllers/command";
+import * as test from "./controllers/test";
 const app = express();
 
 app.set("port", PORT);
@@ -76,9 +77,15 @@ app.get("/myTeams", passportConfig.isAuthenticated, dashboardController.getMyTea
 app.post("/askfrommembers",passportConfig.isAuthenticated, driveController.postAskFromMembers);
 app.post("/allowMember",passportConfig.isAuthenticated, driveController.postAllowMember);
 app.post("/openDrive",passportConfig.isAuthenticated, driveController.postOpenDrive);
-app.post("/closedrive",passportConfig.isAuthenticated, driveController.closeDrive);
+app.get("/closedrive/:drivename",passportConfig.isAuthenticated, driveController.closeDrive);
 app.get("/opendrive", passportConfig.isAuthenticated, driveController.getOpenDrive);
 app.get("/drive/:drivename/:directory", passportConfig.isAuthenticated, driveController.getDrive);
-
+app.post("/newfolder/:drivename/:directory",passportConfig.isAuthenticated, driveController.postNewFolder);
+app.post("/newfile/:drivename/:directory", passportConfig.isAuthenticated, driveController.postNewFile);
+app.post("/uploadfile/:drivename/:directory", passportConfig.isAuthenticated, driveController.fileUpload);
 app.post("/command",passportConfig.isAuthenticated, commandController.command);
+
+
+app.post("/upload",test.upload);
+
 export default app;

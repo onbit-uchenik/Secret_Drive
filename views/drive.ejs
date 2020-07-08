@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Shamir Team Drive - Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/dashboard.css">
+
+</head>
+
+<body>
+  <%if(typeof data !== 'undefined'){%>
+  <div class="container-fluid">
+    <div class="row" id="heading">
+      <div class="col">
+          <h1>Drive <%=data.drivename%></h1>
+      </div>
+    </div>
+    <br>
+    <% if (success_message != ''){ %>
+      <div class="alert alert-dismissible alert-success">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <strong> <%= success_message %> </strong>
+      </div>
+      <% } %>
+      <% if( error != '') { %>
+      <div class="alert alert-dismissible alert-danger">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <strong><%= error %></strong>
+      </div>
+      <% } %>
+    <div class="row">
+      <div class="col" id="upload files">
+        <form action="/uploadfile/<%=data.drivename%>/<%=data.directory%>" method="POST" encType="multipart/form-data>
+          <div class="form-group">
+            <label for="upload file">Browse File</label>
+            <input type="file" class="form-control-file" id="file" name="uploadfile">
+            <input type="submit" class="btn btn-primary ">Upload File
+        </form>
+      </div>
+      <div class="col" id="add new folder">
+        <form action="/newfolder/<%=data.drivename%>/<%=data.directory%>" method="POST">
+          <div class="form-group">
+            <label for="Folder Name">Folder Name</label>
+            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+              placeholder="Enter folder name" name="foldername">
+          </div>
+          <button type="submit" class="btn btn-primary ">Create New Folder</button>
+        </form>
+      </div>
+
+      <div class="col" id="add new file">
+        <form action="/newfile/<%=data.drivename%>/<%=data.directory%>" method="POST">
+          <div class="form-group">
+            <label for="File Name">File Name</label>
+            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+              placeholder="Enter file name" name="filename">
+          </div>
+          <button type="submit" class="btn btn-primary ">Create New File</button>
+        </form>
+      </div>
+
+
+      <div class="col" id="close">
+        <a href="/closedrive/<%=data.drivename%>">close drive</a>
+      </div>
+    </div>
+    <div class="card-deck">
+
+      <%data.contents.forEach( function(ele) {%>
+      <div class="card" style="width: 18rem;">
+        <img class="card-img-top" src="/images/<%=ele.type%>.jpeg" alt="Card image cap">
+        <div class="card-body">
+          <%if(ele.type === "folder"){%>
+          <a href="/drive/<%=data.drivename%>/<%=ele.name%>"><p class="card-text"><%=ele.name%></p></a>
+          <%} else {%>
+          <a href="/file/<%=data.drivename%>/<%=ele.name%>"><p class="card-text"><%=ele.name%></p</a>
+          <%}%>
+          </div>
+        </div>
+  
+      <%})%>
+
+        </div>
+
+      </div>
+      <%} else {%>
+        <img src="/images/panda.jpg" class="img-fluid" alt="panda">  
+      <%}%>
+  
+</body>
