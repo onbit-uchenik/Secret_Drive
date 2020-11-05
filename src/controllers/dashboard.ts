@@ -21,7 +21,7 @@ export const getAccount = (req: Request, res:Response) => {
     res.render("dashboard",{teams:data,user:username});
   })
   .catch(function(err) {
-    logger.debug("error while getting the teamname for user " + username + " " + err);
+    //logger.debug("error while getting the teamname for user " + username + " " + err);
     res.statusCode = 500;
     res.end();
   });
@@ -255,7 +255,7 @@ export const getMyTeams = (req: Request, res:Response) => {
     res.end();
   })
   .catch(function(err) {
-    logger.debug("error while getting the teamname for user " + username + " " + err);
+   // logger.debug("error while getting the teamname for user " + username + " " + err);
     res.statusCode = 500;
     res.end();
   });

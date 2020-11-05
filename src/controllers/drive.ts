@@ -47,7 +47,7 @@ export const postAskFromMembers = (req:Request, res:Response) => {
         });
     })
     .catch(function(err){
-      logger.error("error while getting members name from database",err);
+      //logger.error("error while getting members name from database",err);
       res.statusCode = 500;
       res.end();
     });
@@ -238,31 +238,31 @@ export const postNewFile = (req:Request, res:Response) => {
     });
 };
 
-export const fileUpload = (req:Request, res:Response) => {
+// export const fileUpload = (req:Request, res:Response) => {
   
-  console.log(req);
+//   console.log(req);
   
-  const drivename = req.params.drivename;
-  const directory = req.params.directory;
-  const username = req.session.passport.user;
-  const secret = drive.getSecret(drivename,username);
+//   const drivename = req.params.drivename;
+//   const directory = req.params.directory;
+//   const username = req.session.passport.user;
+//   const secret = drive.getSecret(drivename,username);
   
-  if (!req.files || Object.keys(req.files).length === 0) {
-    req.flash("error", "no file uploaded");
-    res.redirect(`/drive/${drivename}/${directory}`);
-    return;
-  }
-  const file = req.files.uploadfile;
-  console.log(file);
-  file.mv(`/home/onbit-syn/data/${secret}/${directory}/${file.name}`, function(err) {
-    if (err) {
-      console.log(err);
-      req.flash("error","error occured while uploading a file");
-      res.redirect(`/drive/${drivename}/${directory}`);
-      return;
-    }
-    req.flash("success_message" , "file uploaded successfully");
-    res.redirect(`/drive/${drivename}/${directory}`);
-  });
+//   if (!req.files || Object.keys(req.files).length === 0) {
+//     req.flash("error", "no file uploaded");
+//     res.redirect(`/drive/${drivename}/${directory}`);
+//     return;
+//   }
+//   const file = req.files.uploadfile;
+//   console.log(file);
+//   file.mv(`/home/onbit-syn/data/${secret}/${directory}/${file.name}`, function(err) {
+//     if (err) {
+//       console.log(err);
+//       req.flash("error","error occured while uploading a file");
+//       res.redirect(`/drive/${drivename}/${directory}`);
+//       return;
+//     }
+//     req.flash("success_message" , "file uploaded successfully");
+//     res.redirect(`/drive/${drivename}/${directory}`);
+//   });
 
-};
+// };

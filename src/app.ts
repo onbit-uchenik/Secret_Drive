@@ -5,8 +5,7 @@ import bodyParser = require("body-parser")
 import morgan = require("morgan");
 import cookieParser = require("cookie-parser");
 import flash = require("connect-flash");
-import fileUpload = require("express-fileupload");
-import {COOKIE_SECRET,SESSION_SECRET,PORT} from "./env";
+
 import passport = require("passport");
 // import lusca = require("lusca");
 
@@ -15,21 +14,19 @@ import * as userController from "./controllers/user";
 import * as dashboardController from "./controllers/dashboard";
 import * as driveController from "./controllers/drive";
 import * as commandController from "./controllers/command";
-import * as test from "./controllers/test";
 const app = express();
 
-app.set("port", PORT);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/../views"));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev"));
-app.use(fileUpload());
-app.use(cookieParser(COOKIE_SECRET));
+
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
 app.use(session({
-  secret: SESSION_SECRET,
+  secret: process.env.SESSION_SECRET,
   resave: true,
   saveUninitialized: true,
   cookie: {
@@ -82,10 +79,10 @@ app.get("/opendrive", passportConfig.isAuthenticated, driveController.getOpenDri
 app.get("/drive/:drivename/:directory", passportConfig.isAuthenticated, driveController.getDrive);
 app.post("/newfolder/:drivename/:directory",passportConfig.isAuthenticated, driveController.postNewFolder);
 app.post("/newfile/:drivename/:directory", passportConfig.isAuthenticated, driveController.postNewFile);
-app.post("/uploadfile/:drivename/:directory", passportConfig.isAuthenticated, driveController.fileUpload);
+//app.post("/uploadfile/:drivename/:directory", passportConfig.isAuthenticated, driveController.fileUpload);
 app.post("/command",passportConfig.isAuthenticated, commandController.command);
 
 
-app.post("/upload",test.upload);
+
 
 export default app;

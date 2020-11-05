@@ -1,4 +1,4 @@
-export const PORT = 3456;
+export const PORT = process.env;
 
 export const SESSION_SECRET="#iogdserfoiewnqp,qj35nffeoi";
 
