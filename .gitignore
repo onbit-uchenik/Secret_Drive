@@ -1,4 +1,3 @@
-
 # API keys and secrets
 .env
 
@@ -7,12 +6,9 @@ node_modules
 bower_components
 
 # Ignore built ts files
+dist
 dist/**/*
 
 # Ignore node-gyp addon built files
+build
 build/**/*
-
-# ignore yarn.lock
-yarn.lock
-
-package-lock.json

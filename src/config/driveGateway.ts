@@ -128,7 +128,4 @@ export const getSecret = function(drivename: string, membername: string):string 
 };
 
 
-export const upload = (req:Request, res:Response) => {
-  
-}
 

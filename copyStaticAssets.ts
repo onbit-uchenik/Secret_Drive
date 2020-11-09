@@ -1,7 +1,7 @@
 import * as shell from "shelljs";
 
-shell.cp("-R", "src/public/js/lib", "dist/public/js/");
-shell.cp("-R", "src/public/fonts", "dist/public/");
-shell.cp("-R", "src/public/images", "dist/public/");
+shell.config.silent = false;
+
+shell.cp("-R", "src/public/", "dist/public/");
 shell.cp(".env", "dist/.env");
-shell.cp("src/private-key.pem", "csr.pem");
+shell.cp("addon.node.d.ts", "build/Release/addon.node.d.ts");

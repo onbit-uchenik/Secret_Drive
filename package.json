@@ -7,14 +7,12 @@
   "scripts": {
     "compile-addon": "node-gyp rebuild",
     "clean": "node-gyp clean",
-    "start": "npm run serve",
-    "build": "npm run build-ts && npm run lint && npm run copy-static-assets",
-    "serve": "node dist/bin/www.js",
+    "start": "node dist/bin/www.js",
+    "build": "npm run compile-addon && cp addon.node.d.ts build/Release/addon.node.d.ts && npm run build-ts && npm run copy-static-assets",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
-    "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
     "copy-static-assets": "ts-node copyStaticAssets.ts",
-    "dev": "npm run watch-ts && npm run lint && npm run copy-static-assets && nodemon dist/bin/www.js"
+    "dev": "concurrently -n 'server, ts-watcher' -c 'bgBlue.bold,bgGreen.bold' 'DEBUG=shamir-team-drive:server DEBUG_COLORS=true nodemon dist/bin/www.js' 'npm run watch-ts' "
   },
   "repository": {
     "type": "git",
@@ -89,7 +87,7 @@
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "concurrently": "^5.2.0",
-    "eslint": "^7.1.0",
+    "eslint": "^7.13.0",
     "mocha": "^7.2.0",
     "shelljs": "^0.8.4",
     "supertest": "^4.0.2",

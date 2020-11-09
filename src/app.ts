@@ -1,3 +1,4 @@
+import dotenv = require("dotenv");
 import express = require("express");
 import session = require("express-session");
 import path = require("path");
@@ -9,11 +10,16 @@ import flash = require("connect-flash");
 import passport = require("passport");
 // import lusca = require("lusca");
 
+
+
 import * as passportConfig from "./config/passport";
 import * as userController from "./controllers/user";
 import * as dashboardController from "./controllers/dashboard";
 import * as driveController from "./controllers/drive";
 import * as commandController from "./controllers/command";
+
+dotenv.config();
+
 const app = express();
 
 app.set("view engine", "ejs");
@@ -81,8 +87,6 @@ app.post("/newfolder/:drivename/:directory",passportConfig.isAuthenticated, driv
 app.post("/newfile/:drivename/:directory", passportConfig.isAuthenticated, driveController.postNewFile);
 //app.post("/uploadfile/:drivename/:directory", passportConfig.isAuthenticated, driveController.fileUpload);
 app.post("/command",passportConfig.isAuthenticated, commandController.command);
-
-
 
 
 export default app;

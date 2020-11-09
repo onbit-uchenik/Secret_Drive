@@ -177,7 +177,7 @@ export const joinTeam = (req: Request, res:Response) => {
       const x =  secret.length * 2;
       const sharesEachMember  = [];
       for(let i=0; i<output.membercnt; i++) {
-        let temp = [];
+        const temp = [];
         let cnt = 0;
         
         while (cnt < x) {
