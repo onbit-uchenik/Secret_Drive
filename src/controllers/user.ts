@@ -6,13 +6,39 @@ import bcrypt = require("bcryptjs");
 import logger from "../util/logger";
 import passport = require("passport");
 import {validPasswordLength} from "../env";
-/**
- * GET /signup
- */
+import express = require("express");
 
-export const getSignup = (req:Request, res:Response) => {
-  res.render("signup");
-};
+
+const router = express.Router();
+
+router
+  .get("/signup", (req:Request, res:Response) => {
+      res.render("signup");
+  })
+  .post("/signup", async (req: Request, res: Response) => {
+    const {email="", 
+    username="", password="", confirmPassword=""} = req.body;
+    
+    await check("email").isEmail().normalizeEmail().run(req);
+    await check("username").notEmpty().run(req);
+    await check("password").isLength({min:validPasswordLength }).run(req);
+    await check("confirmPassword").equals(req.body.password).run(req);
+    const errors = validationResult(req);
+    
+    if (errors.isEmpty()) {
+      res.statusCode = 422;
+      errors.array.forEach((err) => {
+        if(err.param === "confirmPassword") {
+          res.render("signup", {err:"Passwords do not matches"});
+          return;
+        }
+      });
+      res.render("signup", {err: "Kindly cross-check all entries"});
+      return;
+    }  
+  
+  });
+
 
 /**
  * 
