@@ -2,10 +2,10 @@ import {Request, Response, NextFunction} from "express";
 import {query} from "../db";
 import { QueryResult } from "pg";
 import addon = require("../../build/Release/addon.node");
-import * as notification from  "../config/notifications";
-import * as drive from "../config/driveGateway";
+import * as notification from  "../services/notifications";
+import * as drive from "../services/driveGateway";
 
-import * as command from "../controllers/command";
+import * as command from "./command";
 
 // import fs = require("fs");
 import logger from "../util/logger";

@@ -8,7 +8,7 @@ const dbConfig = {
   port: parseInt(process.env.SQL_DB_PORT, 10),
   max: parseInt(process.env.SQL_MAX_POOL_CONNECTIONS),
   connectionTimeoutMillis: parseInt(process.env.SQL_CONNECTION_TIMEOUT_MILLIS, 10),
-  idleTimeoutMillis: parseInt(process.env.SQL_IDEAL_TIMEOUT_MILLIS)
+  idleTimeoutMillis: parseInt(process.env.SQL_IDEAL_TIMEOUT_MILLIS, 10)
 };
 
 export const pool = new pg.Pool(dbConfig);

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import * as drive from "../config/driveGateway";
+import * as drive from "../services/driveGateway";
 import f = require("fs");
 import { reject, resolve } from "bluebird";
 const fs = f.promises;

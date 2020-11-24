@@ -1,4 +1,7 @@
 import dotenv = require("dotenv");
+dotenv.config();
+
+
 import express = require("express");
 import session = require("express-session");
 import path = require("path");
@@ -8,17 +11,11 @@ import cookieParser = require("cookie-parser");
 import flash = require("connect-flash");
 
 import passport = require("passport");
-// import lusca = require("lusca");
 
+import {router as memberController} from "./api/member"; 
 
+import * as passportConfig from "./services/passport";
 
-import * as passportConfig from "./config/passport";
-import * as userController from "./controllers/user";
-import * as dashboardController from "./controllers/dashboard";
-import * as driveController from "./controllers/drive";
-import * as commandController from "./controllers/command";
-
-dotenv.config();
 
 const app = express();
 
@@ -62,31 +59,35 @@ app.use(function (req, res, next) {
 /**
  * primary app routes
  */
-app.get("/signup",userController.getSignup);
-app.post("/signup",userController.postSignup);
-app.get("/login", userController.getLogin);
-app.post("/login",userController.postLogin);
-app.get("/logout",passportConfig.isAuthenticated,userController.getLogout);
-app.get("/thankyou", passportConfig.isAuthenticated, userController.getThankyou);
-
-app.get("/dashboard", passportConfig.isAuthenticated, dashboardController.getAccount);
-app.get("/createnewteam", passportConfig.isAuthenticated, dashboardController.getCreateNewTeam);
-app.post("/createnewteam", passportConfig.isAuthenticated, dashboardController.postCreateNewTeam);
-app.get("/notifications", passportConfig.isAuthenticated, dashboardController.getNotifications);
-app.post("/joinTeam",passportConfig.isAuthenticated, dashboardController.joinTeam);
-app.get("/myTeams", passportConfig.isAuthenticated, dashboardController.getMyTeams);
 
 
-app.post("/askfrommembers",passportConfig.isAuthenticated, driveController.postAskFromMembers);
-app.post("/allowMember",passportConfig.isAuthenticated, driveController.postAllowMember);
-app.post("/openDrive",passportConfig.isAuthenticated, driveController.postOpenDrive);
-app.get("/closedrive/:drivename",passportConfig.isAuthenticated, driveController.closeDrive);
-app.get("/opendrive", passportConfig.isAuthenticated, driveController.getOpenDrive);
-app.get("/drive/:drivename/:directory", passportConfig.isAuthenticated, driveController.getDrive);
-app.post("/newfolder/:drivename/:directory",passportConfig.isAuthenticated, driveController.postNewFolder);
-app.post("/newfile/:drivename/:directory", passportConfig.isAuthenticated, driveController.postNewFile);
-//app.post("/uploadfile/:drivename/:directory", passportConfig.isAuthenticated, driveController.fileUpload);
-app.post("/command",passportConfig.isAuthenticated, commandController.command);
+app.use("/member", memberController); 
+
+// app.get("/signup",userController.getSignup);
+// app.post("/signup",userController.postSignup);
+// app.get("/login", userController.getLogin);
+// app.post("/login",userController.postLogin);
+// app.get("/logout",passportConfig.isAuthenticated,userController.getLogout);
+// app.get("/thankyou", passportConfig.isAuthenticated, userController.getThankyou);
+
+// app.get("/dashboard", passportConfig.isAuthenticated, dashboardController.getAccount);
+// app.get("/createnewteam", passportConfig.isAuthenticated, dashboardController.getCreateNewTeam);
+// app.post("/createnewteam", passportConfig.isAuthenticated, dashboardController.postCreateNewTeam);
+// app.get("/notifications", passportConfig.isAuthenticated, dashboardController.getNotifications);
+// app.post("/joinTeam",passportConfig.isAuthenticated, dashboardController.joinTeam);
+// app.get("/myTeams", passportConfig.isAuthenticated, dashboardController.getMyTeams);
+
+
+// app.post("/askfrommembers",passportConfig.isAuthenticated, driveController.postAskFromMembers);
+// app.post("/allowMember",passportConfig.isAuthenticated, driveController.postAllowMember);
+// app.post("/openDrive",passportConfig.isAuthenticated, driveController.postOpenDrive);
+// app.get("/closedrive/:drivename",passportConfig.isAuthenticated, driveController.closeDrive);
+// app.get("/opendrive", passportConfig.isAuthenticated, driveController.getOpenDrive);
+// app.get("/drive/:drivename/:directory", passportConfig.isAuthenticated, driveController.getDrive);
+// app.post("/newfolder/:drivename/:directory",passportConfig.isAuthenticated, driveController.postNewFolder);
+// app.post("/newfile/:drivename/:directory", passportConfig.isAuthenticated, driveController.postNewFile);
+// //app.post("/uploadfile/:drivename/:directory", passportConfig.isAuthenticated, driveController.fileUpload);
+// app.post("/command",passportConfig.isAuthenticated, commandController.command);
 
 
 export default app;

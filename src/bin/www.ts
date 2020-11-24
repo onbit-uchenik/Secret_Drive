@@ -1,11 +1,10 @@
 import app from "../app";
 import http  = require("http");
-import dotenv = require("dotenv");
 import debugLib = require("debug");
+
 const debug = debugLib("shamir-team-drive:server");
 
 
-dotenv.config();
 
 
 function normalizePort(val:string): number {

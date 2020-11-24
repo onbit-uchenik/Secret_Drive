@@ -1,7 +1,8 @@
-create table user(
-  user_id bigserial primary key,
-  user_name varchar(255) not null,
-  user_password varchar(255) not null,
+create table member(
+  member_id bigserial primary key,
+  member_name varchar(255) not null,
+  member_password varchar(255) not null,
+  member_email varchar(255) unique not null 
 );
 
 create table team(
@@ -16,9 +17,9 @@ create table share(
   share_array integer[] not null
 );
 
-create table link(
+create table linkTeamMemberShare(
   link_id bigserial primary key,
-  link_user_id bigserial references user(user_id) not null,
+  link_member_id bigserial references member(member_id) not null,
   link_team_id bigserial references team(team_id) not null,
-  link_share_id bigserial references share(share_array) not null
+  link_share_id bigserial references share(share_id) not null
 );
