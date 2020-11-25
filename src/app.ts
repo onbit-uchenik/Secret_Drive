@@ -13,7 +13,7 @@ import flash = require("connect-flash");
 import passport = require("passport");
 
 import {router as memberController} from "./api/member"; 
-
+import {router as dashboardController} from "./api/dashboard";
 import * as passportConfig from "./services/passport";
 
 
@@ -61,7 +61,8 @@ app.use(function (req, res, next) {
  */
 
 
-app.use("/member", memberController); 
+app.use("/member", memberController);
+app.use("/dashboard", passportConfig.isAuthenticated, dashboardController); 
 
 // app.get("/signup",userController.getSignup);
 // app.post("/signup",userController.postSignup);

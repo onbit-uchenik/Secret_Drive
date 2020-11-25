@@ -29,13 +29,16 @@ router
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         res.statusCode = 422;
+        let isPassConfirmPassEqual = true;
         errors.array().forEach((err) => {
           if (err.param === "confirmPassword") {
-            res.render("signup", { err: "Passwords do not matches" });
-            return;
+             isPassConfirmPassEqual = false;
           }
-          
         });
+        if(!isPassConfirmPassEqual) {
+          res.render("signup", {err:"Password and confirm password do not matches"});
+          return;
+        }
         res.render("signup", { err: "Kindly cross-check all entries" });
         return;
       }

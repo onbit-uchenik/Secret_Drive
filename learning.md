@@ -25,3 +25,12 @@
 
 **Q9.** What is ssh-agent in ubuntu?
 **A9.** 
+
+**Q10.** Explain in cookie setting ?
+
+```javascript
+    res.set("Cache-control", "no-cache, private, no-store, must-revalidate, post-check=0,pre-check=0"); 
+```
+
+**Q11.** Can we break forEach loop ? <br />
+**A11.** No, we cannot break forEach untill or unless we throw some error. callback inside the forEach will be executed synchronously for each element.The value returned by forEach loop is undefined.

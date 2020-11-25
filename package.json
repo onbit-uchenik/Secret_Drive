@@ -6,7 +6,7 @@
   "gypfile": true,
   "scripts": {
     "compile-addon": "node-gyp rebuild",
-    "clean": "node-gyp clean",
+    "clean": "node-gyp clean && rm -r node_modules/ && rm -r dist/",
     "start": "node dist/bin/www.js",
     "build": "npm run compile-addon && cp addon.node.d.ts build/Release/addon.node.d.ts && npm run build-ts && npm run copy-static-assets",
     "build-ts": "tsc",

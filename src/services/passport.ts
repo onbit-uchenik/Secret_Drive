@@ -29,8 +29,8 @@ const memberStartegy = new LocalStrategy(
         done("Password Donot Matches", false, { message: "Password and Email combination is incorrect" });
         return;
       }
-      
-      done(false, {id:member.memberId, role: "member"})
+
+      done(false, { id: member.memberId, role: "member" })
     } catch (err) {
       console.error(err);
       done("Internal Server Error", false, { message: "Internal Server Error Kindly Try Again" });
@@ -40,22 +40,28 @@ const memberStartegy = new LocalStrategy(
 
 export const configStrategy = (passport) => {
   passport.use("member", memberStartegy);
-  
-  
+
+
   // storing small identifier in cookie to maintan session
-  passport.serializeUser( function (user: SerializedUser, done:any) {
+  passport.serializeUser(function (user: SerializedUser, done: any) {
+    
     done(null, JSON.stringify(user));
   });
 
 
-  passport.deserializeUser( async function( data:SerializedUser, done: any) {  
-  
-    if(data.role === "member") {
-      const member = await getMemberById(data.id);
-      console.log(member);
-      done(null, member);
+  passport.deserializeUser(async function (data: string, done: any) {
+    try {
+      
+      const parsedData = JSON.parse(data);
+      if (parsedData.role === "member") {
+        
+        const member = await getMemberById(parsedData.id);
+        
+        done(null, member);
+      }
+    } catch (err) {
+      console.log(err);
     }
-
   });
 }
 
@@ -65,6 +71,6 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction)
     return next();
   } else {
     console.log("the request was not authenticated");
-    res.redirect("/login");
+    res.redirect("/member/login");
   }
 };

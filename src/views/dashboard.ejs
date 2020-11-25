@@ -53,11 +53,11 @@
         <br>
     </div>
     <div class="card-deck">
-        <%if(typeof teams !== 'undefined'){%>
+        <%if(teams){%>
         <%teams.forEach( function(ele) {%>
         <div class="card">
             <div class="card-block">
-                <h5 class="card-title"><%=ele.teamname%></h5>
+                <h5 class="card-title"><%=ele.teamName%></h5>
                 <p class="card-text">
                     Open your team drive
                 </p>
